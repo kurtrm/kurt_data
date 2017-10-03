@@ -1,4 +1,4 @@
-"""Setup for transcript transcriber."""
+"""Setup for kurt's data set analysis."""
 from setuptools import setup
 
 
@@ -8,13 +8,12 @@ extra_packages = {
 
 
 setup(
-    name='Transcript Transcriber',
-    description='Passes security credentials to the UF website'
-                'and parses unofficial transcripts to look nicer.',
+    name='Kurt Data',
+    description='Application for downloading sources of personal data.',
     version=0.0,
     author='Kurt Maurer',
     author_email='kurtrm@gmail.com',
     license='MIT',
-    install_requires=['bs4', 'requests', 'pytest'],
+    install_requires=['fitbit', 'pytest'],
     extras_require=extra_packages
 )
