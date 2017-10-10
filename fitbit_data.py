@@ -17,3 +17,11 @@ kurt = Fitbit(
     refresh_token=REFRESH_TOKEN,
     expires_at=EXPIRES_AT,
 )
+
+#  Activate this project's environment.
+#  Run ../python-fitbit/gather_keys_oauth2.py $client_id $secret
+#  Set the new environmental variables from the output
+
+
+def refresh_cb(token_dict):
+    """Function for refreshing access_token, refresh_token, and expires_at."""
