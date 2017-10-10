@@ -15,9 +15,8 @@ def refresh_cb(token_dict):
     os.environ['access_token'] = token_dict['access_token']
     os.environ['expires_at'] = str(token_dict['expires_at'])
     os.environ['refresh_token'] = token_dict['refresh_token']
-    # self.access_token = os.environ['access_token']
-    # self.refresh_token = os.environ['refresh_token']
-    # self.expires_at = os.environ['expires_at']
+
+    return token_dict
 
 kurt = Fitbit(
     CLIENT_ID,
