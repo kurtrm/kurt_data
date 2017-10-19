@@ -1,6 +1,0 @@
-tokens:
-    access_token: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1RE5QTDYiLCJhdWQiOiIyMjhONTIiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJyc29jIHJhY3QgcnNldCBybG9jIHJ3ZWkgcmhyIHJwcm8gcm51dCByc2xlIiwiZXhwIjoxNTA3Njg3Njg1LCJpYXQiOjE1MDc2NTg4ODV9.1w-kDKhxMxk0m49Dl6KpoW4eA3oTP8bBjbgzKTgBT9I
-    refresh_token: cc567aeedeb90d4c83e59530c68560c0eaef6046c6c2db8e6ebd8aa6fcfff486
-    expires_at: 1507687684.2446728
-    user_id: 5DNPL6
-    expires_in: 28800
