@@ -38,7 +38,9 @@ class OAuth2Server:
               'enter the following url into the address bar: '
               '\n {}'.format(url))
         # Open the web browser in a new thread for command-line browser support
-        threading.Timer(1, webbrowser.open, args=(url,)).start()
+        # webbrowser.open_new(url, new=1)
+        browser = webbrowser.get('firefox')
+        threading.Timer(1, browser.open, args=[url]).start()
         cherrypy.quickstart(self)
 
     @cherrypy.expose

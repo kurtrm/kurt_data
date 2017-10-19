@@ -20,7 +20,8 @@ def refresh_cb(self, token_dict):
 
 
 def instantiate_fitbit_kurt():
-    """Uses gather_keys_oauth2 class to gather tokens and instantiate a
+    """
+    Use gather_keys_oauth2 class to gather tokens and instantiate a.
 
     'Kurt' Fitbit class.
     """
@@ -34,10 +35,9 @@ def instantiate_fitbit_kurt():
         SECRET
     )
     server.browser_authorize()
-    import pdb; pdb.set_trace()
-    access_token = server.oauth.token['access_token']
-    refresh_token = server.oauth.token['refresh_token']
-    expires_at = server.oauth.token['expires_at']
+    access_token = server.fitbit.client.session.token['access_token']
+    refresh_token = server.fitbit.client.session.token['refresh_token']
+    expires_at = server.fitbit.client.session.token['expires_at']
     kurt = Fitbit(
         CLIENT_ID,
         SECRET,
