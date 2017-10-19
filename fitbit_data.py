@@ -1,10 +1,5 @@
 """Script for pulling data from the Fitbit API."""
 from fitbit import Fitbit
-# import os
-# import yaml
-
-# CLIENT_ID = os.environ['client_id']
-# SECRET = os.environ['secret']
 
 
 def refresh_cb(self, token_dict):
@@ -14,9 +9,6 @@ def refresh_cb(self, token_dict):
     self.expires_at = self.token_dict['expires_at']
 
     return token_dict
-
-# with open('config.yml') as config:
-#     tokens = yaml.load(config)
 
 
 def instantiate_fitbit_kurt():
@@ -48,6 +40,6 @@ def instantiate_fitbit_kurt():
     )
     return kurt
 
-#  Activate this project's environment.
-#  Run ../python-fitbit/gather_keys_oauth2.py $client_id $secret
-#  Set the new environmental variables from the output
+# TODO: Determine what data you care about that the api provides
+# TODO: Run through the data project guidelines and
+#       determine what there is to learn
