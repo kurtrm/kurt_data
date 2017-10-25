@@ -1,47 +1,107 @@
-"""Module for parsing tmobile bill PDFs."""
+"""Module for parsing tmobile bill PDFs.
+
+After removing line feeds and empty strings, the resulting text
+has a fairly consistent pattern with some minor nuances.
+
+The data we want to collect starts on page 4 (index 3) of the bill.
+parsing_start = 3
+
+On each page thereafter, 'Date and time' marks the beginning of the
+column headers and the data. There are 6 columns per section, thus:
+columns = 6
+
+Sections will end, and new sections will start on the same page. 'Total:'
+is consistently the marker for the end of each section. Worth noting,
+the text two indeces ahead of this marker is the title of the next section,
+which we check to see if it's the last section 'Data'. (end + 2)
+TODO: It is possible that more than 1 section will end on the same page. This
+logic needs to be fleshed out and added.
+
+We also grab the text two indeces behind 'Date and time' in order to use
+it as the key for the master bill_dict the function will return. (start - 2)
+
+Lastly, there's a difference in the spacing between the start of the next
+section in the transition between 'Text' and 'Data', thus the check to see
+if the section is 'Data' in _parse_discontinuous_records.
+end + 4 or end + 5
+
+"""
 import PyPDF2
 
 
-def dictify_bill(filename):
+def parse_bill(filename):
     """Master function to parse T-Mobile PDFs. Going to be broken up."""
+    # So far, the relevant information starts on the 3rd (index) page
     pdf_bill = PyPDF2.PdfFileReader(open(filename, 'rb'))
     bill_dict = {}
     section_dict = {}
-    for page in range(3, pdf_bill.numPages):
-        raw_page = pdf_bill.getPage(page)
-        text_page = raw_page.extractText()
-        split_text_page = text_page.split('\n')
-        while '' in split_text_page:
-            split_text_page.remove('')
-        if 'Total:' in split_text_page:
-            header = split_text_page.index('Date and time')
-            end_of_section = split_text_page.index('Total:')
-            second_dict = {}
-            section_label = split_text_page[header - 2]
-            for i, column in enumerate(split_text_page[header:header + 6]):
-                column_index = header + i
-                second_dict[column] = split_text_page[column_index + 6:end_of_section:6]
-            # import pdb; pdb.set_trace()
-            bill_dict[section_label] = {key: section_dict[key] + second_dict[key] for key in second_dict.keys()}
-            # Update the original header's dictionary
-            if end_of_section + 2 == 'Data':
-                start_of_next_section = end_of_section + 4
-            else:
-                start_of_next_section = end_of_section + 5
-            next_section = split_text_page[start_of_next_section::]
-            section_dict = {}
-            second_dict = {}
-            for column in next_section[:6]:
-                column_index = next_section.index(column)
-                section_dict[column] = next_section[column_index + 6::6]
+    parsing_start = 3
+
+    for page in range(parsing_start, pdf_bill.numPages):
+        prepared_page = _prepare_bill(pdf_bill, page)
+        if 'Total:' in prepared_page:
+            (bill_dict,
+             section_dict) = _parse_discontinuous_records(prepared_page,
+                                                          bill_dict,
+                                                          section_dict)
         else:
-            pivot_index = split_text_page.index('Date and time')
-            for i, column in enumerate(split_text_page[pivot_index:pivot_index + 6]):
-                column_index = pivot_index + i
-                values = split_text_page[column_index + 6::6]
-                if column in section_dict:
-                    section_dict[column] = section_dict[column] + values
-                else:
-                    section_dict[column] = values
+            (bill_dict,
+             section_dict) = _parse_continuous_records(prepared_page,
+                                                       bill_dict,
+                                                       section_dict)
 
     return bill_dict
+
+
+def _prepare_bill(pdf, page):
+    """Prepare the PDF page to be parsed."""
+    raw_page = pdf.getPage(page)
+    raw_text = raw_page.extractText()
+    prepared_page = raw_text.split('\n')
+    while '' in prepared_page:
+        prepared_page.remove('')
+
+    return prepared_page
+
+
+def _parse_discontinuous_records(prepared_page, bill_dict, section_dict):
+    """Handle parsing a page that has a break in the pattern of records.
+
+    For example, the 'Talk' section ends and the 'Text' section begins.
+    """
+    columns = 6
+    start = prepared_page.index('Date and time')
+    end = prepared_page.index('Total:')
+    tail_dict = {}
+    section_label = prepared_page[start - 2]
+    for i, column in enumerate(prepared_page[start:start + columns]):
+        column_index = start + i
+        tail_dict[column] = prepared_page[column_index + columns:end:columns]
+    bill_dict[section_label] = {key: section_dict.get(key, []) + tail_dict[key]
+                                for key in tail_dict.keys()}
+    if end + 2 == 'Data':
+        start_section = end + 4
+    else:
+        start_section = end + 5
+    next_section = prepared_page[start_section::]
+    section_dict = {}
+    for column in next_section[:columns]:
+        column_index = next_section.index(column)
+        section_dict[column] = next_section[column_index + columns::columns]
+
+    return bill_dict, section_dict
+
+
+def _parse_continuous_records(prepared_page, bill_dict, section_dict):
+    """Handle parsing a continuous list of records."""
+    columns = 6
+    start = prepared_page.index('Date and time')
+    for i, column in enumerate(prepared_page[start:start + columns]):
+        column_index = start + i
+        values = prepared_page[column_index + columns:columns]
+        if column in section_dict:
+            section_dict[column] = section_dict[column] + values
+        else:
+            section_dict[column] = values
+
+    return bill_dict, section_dict
