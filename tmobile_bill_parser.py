@@ -26,12 +26,16 @@ if the section is 'Data' in _parse_discontinuous_records.
 end + 4 or end + 5
 
 """
+import os
 import PyPDF2
 
 
 def parse_bill(filename):
-    """Master function to parse T-Mobile PDFs. Going to be broken up."""
-    # So far, the relevant information starts on the 3rd (index) page
+    """House the main logic for determining when to use which functions.
+
+    Based on markers on each PDF page.
+    """
+    #  TODO: Input validation
     pdf_bill = PyPDF2.PdfFileReader(open(filename, 'rb'))
     bill_dict = {}
     section_dict = {}
@@ -45,12 +49,21 @@ def parse_bill(filename):
                                                           bill_dict,
                                                           section_dict)
         else:
-            (bill_dict,
-             section_dict) = _parse_continuous_records(prepared_page,
-                                                       bill_dict,
-                                                       section_dict)
+            bill_dict = _parse_continuous_records(prepared_page,
+                                                  bill_dict,
+                                                  section_dict)
 
     return bill_dict
+
+
+def parse_multiple_bills(directory):
+    """Take a list of filenames or a directory and returns several bills."""
+    bill_list = os.listdir(directory)
+    bill_directory = {}
+    for bill in bill_list:
+        path = 'bills/' + bill
+        bill_key = bill[:-4]
+        bill_directory[bill_key] = parse_bill(path)
 
 
 def _prepare_bill(pdf, page):
@@ -104,4 +117,4 @@ def _parse_continuous_records(prepared_page, bill_dict, section_dict):
         else:
             section_dict[column] = values
 
-    return bill_dict, section_dict
+    return section_dict
