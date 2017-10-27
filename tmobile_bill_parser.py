@@ -100,13 +100,14 @@ def _parse_discontinuous_records(prepared_page, bill_dict, section_dict):
         tail_dict[column] = prepared_page[column_index + columns:end:columns]
     bill_dict[section_label] = {key: section_dict.get(key, []) + tail_dict[key]
                                 for key in tail_dict.keys()}
-    if end + 2 == 'Data':
+    if prepared_page[end + 2] == 'Data':
         start_section = end + 4
     else:
+        # import pdb; pdb.set_trace()
         start_section = end + 5
-    next_section = prepared_page[start_section::]
+    next_section = prepared_page[start_section::]  # Colon, check
     section_dict = {}
-    tail_dict = {}
+    tail_dict = {}  # Do I need this
     for column in next_section[:columns]:
         column_index = next_section.index(column)
         section_dict[column] = next_section[column_index + columns::columns]
@@ -116,6 +117,7 @@ def _parse_discontinuous_records(prepared_page, bill_dict, section_dict):
 
 def _parse_continuous_records(prepared_page, bill_dict, section_dict):
     """Handle parsing a continuous list of records."""
+    #  Passing bill_dict to this, maybe unnecessary
     columns = 6
     start = prepared_page.index('Date and time')
     for i, column in enumerate(prepared_page[start:start + columns]):
