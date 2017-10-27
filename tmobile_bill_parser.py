@@ -50,9 +50,10 @@ def parse_bill(filename):
                                                           bill_dict,
                                                           section_dict)
         else:
-            bill_dict = _parse_continuous_records(prepared_page,
-                                                  bill_dict,
-                                                  section_dict)
+            section_dict = _parse_continuous_records(prepared_page,
+                                                     bill_dict,
+                                                     section_dict)
+        print(list(bill_dict.keys()))
 
     return bill_dict
 
@@ -72,11 +73,15 @@ def parse_multiple_bills(directory):
 
 
 def _prepare_bill(pdf, page):
-    """Prepare the PDF page to be parsed."""
+    """Prepare the PDF page to be parsed.
+
+    Due to the nature of the document, we need to preserve some whitesapce,
+    thus we split on returns and remove the last item in the list which is
+    an empty string.
+    """
     raw_page = pdf.getPage(page)
     raw_text = raw_page.extractText()
     prepared_page = raw_text.split('\n')
-    print(prepared_page.count(''))
     while '' in prepared_page:
         prepared_page.remove('')
 
@@ -104,6 +109,7 @@ def _parse_discontinuous_records(prepared_page, bill_dict, section_dict):
         start_section = end + 5
     next_section = prepared_page[start_section::]
     section_dict = {}
+    tail_dict = {}
     for column in next_section[:columns]:
         column_index = next_section.index(column)
         section_dict[column] = next_section[column_index + columns::columns]
@@ -117,7 +123,7 @@ def _parse_continuous_records(prepared_page, bill_dict, section_dict):
     start = prepared_page.index('Date and time')
     for i, column in enumerate(prepared_page[start:start + columns]):
         column_index = start + i
-        values = prepared_page[column_index + columns:columns]
+        values = prepared_page[column_index + columns::columns]
         if column in section_dict:
             section_dict[column] = section_dict[column] + values
         else:
