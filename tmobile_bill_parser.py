@@ -35,7 +35,8 @@ def parse_bill(filename):
 
     Based on markers on each PDF page.
     """
-    #  TODO: Input validation
+    if not os.path.isfile(filename):
+        raise ValueError("Not a valid file path.")
     pdf_bill = PyPDF2.PdfFileReader(open(filename, 'rb'))
     bill_dict = {}
     section_dict = {}
@@ -57,7 +58,9 @@ def parse_bill(filename):
 
 
 def parse_multiple_bills(directory):
-    """Take a list of filenames or a directory and returns several bills."""
+    """Take a list of filenames or a directory and return several bills."""
+    if not os.path.isdir(directory):
+        raise ValueError("Not a valid file path.")
     bill_list = os.listdir(directory)
     bill_directory = {}
     for bill in bill_list:
@@ -65,12 +68,15 @@ def parse_multiple_bills(directory):
         bill_key = bill[:-4]
         bill_directory[bill_key] = parse_bill(path)
 
+    return bill_directory
+
 
 def _prepare_bill(pdf, page):
     """Prepare the PDF page to be parsed."""
     raw_page = pdf.getPage(page)
     raw_text = raw_page.extractText()
     prepared_page = raw_text.split('\n')
+    print(prepared_page.count(''))
     while '' in prepared_page:
         prepared_page.remove('')
 
