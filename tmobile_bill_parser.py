@@ -14,8 +14,7 @@ Sections will end, and new sections will start on the same page. 'Total:'
 is consistently the marker for the end of each section. Worth noting,
 the text two indeces ahead of this marker is the title of the next section,
 which we check to see if it's the last section 'Data'. (end + 2)
-TODO: It is possible that more than 1 section will end on the same page. This
-logic needs to be fleshed out and added.
+TODO: Verify logic is correct for the while Loop.
 
 We also grab the text two indeces behind 'Date and time' in order to use
 it as the key for the master bill_dict the function will return. (start - 2)
@@ -51,7 +50,6 @@ def parse_bill(filename):
                                                           section_dict)
         else:
             section_dict = _parse_continuous_records(prepared_page,
-                                                     bill_dict,
                                                      section_dict)
 
     return bill_dict
@@ -93,31 +91,33 @@ def _parse_discontinuous_records(prepared_page, bill_dict, section_dict):
     columns = 6
     start = prepared_page.index('Date and time')
     end = prepared_page.index('Total:')
-    tail_dict = {}
-    section_label = prepared_page[start - 2]
-    for i, column in enumerate(prepared_page[start:start + columns]):
-        column_index = start + i
-        tail_dict[column] = prepared_page[column_index + columns:end:columns]
-    bill_dict[section_label] = {key: section_dict.get(key, []) + tail_dict[key]
-                                for key in tail_dict.keys()}
-    if prepared_page[end + 2] == 'Data':
-        start_section = end + 4
-    else:
-        # import pdb; pdb.set_trace()
-        start_section = end + 5
-    next_section = prepared_page[start_section::]  # Colon, check
-    section_dict = {}
-    tail_dict = {}  # Do I need this
-    for column in next_section[:columns]:
-        column_index = next_section.index(column)
-        section_dict[column] = next_section[column_index + columns::columns]
+    while True:
+        tail_dict = {}
+        section_label = prepared_page[start - 2]
+        for i, column in enumerate(prepared_page[start:start + columns]):
+            column_index = start + i
+            tail_dict[column] = prepared_page[column_index + columns:end:columns]
+        bill_dict[section_label] = {key: section_dict.get(key, []) + tail_dict[key]
+                                    for key in tail_dict.keys()}
+        if prepared_page[end + 2] == 'Data':
+            start_section = end + 4
+        else:
+            start_section = end + 5
+        if 'Total:' in prepared_page[start_section:]:
+            start = start_section
+            end = prepared_page.index('Total:', start_section)
+            continue
+        next_section = prepared_page[start_section:]
+        section_dict = {}
+        for column in next_section[:columns]:
+            column_index = next_section.index(column)
+            section_dict[column] = next_section[column_index + columns::columns]
 
-    return bill_dict, section_dict
+        return bill_dict, section_dict
 
 
-def _parse_continuous_records(prepared_page, bill_dict, section_dict):
+def _parse_continuous_records(prepared_page, section_dict):
     """Handle parsing a continuous list of records."""
-    #  Passing bill_dict to this, maybe unnecessary
     columns = 6
     start = prepared_page.index('Date and time')
     for i, column in enumerate(prepared_page[start:start + columns]):
