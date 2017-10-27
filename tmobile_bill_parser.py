@@ -53,7 +53,6 @@ def parse_bill(filename):
             section_dict = _parse_continuous_records(prepared_page,
                                                      bill_dict,
                                                      section_dict)
-        print(list(bill_dict.keys()))
 
     return bill_dict
 
@@ -81,9 +80,7 @@ def _prepare_bill(pdf, page):
     """
     raw_page = pdf.getPage(page)
     raw_text = raw_page.extractText()
-    prepared_page = raw_text.split('\n')
-    while '' in prepared_page:
-        prepared_page.remove('')
+    prepared_page = raw_text.split('\n')[:-1]
 
     return prepared_page
 
