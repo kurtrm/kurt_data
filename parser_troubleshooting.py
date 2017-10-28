@@ -1,16 +1,18 @@
+"""This has been maintained for posterity."""
 import PyPDF2
+
+
+"""Module for parsing tmobile bill PDFs."""
 
 
 def parse_billy(filename):
     """Master function to parse T-Mobile PDFs. Going to be broken up."""
-
     # ====== init ======
     pdf_bill = PyPDF2.PdfFileReader(open(filename, 'rb'))
     # So far, the relevant information starts on the 3rd (index) page
     bill_dict = {}
     section_dict = {}
     # ====== init ======
-
     for page in range(3, pdf_bill.numPages):
 
     # ======= Method for preparation of the text. ========
@@ -33,7 +35,7 @@ def parse_billy(filename):
                 column_index = header + i
                 second_dict[column] = split_text_page[column_index + 6:end_of_section:6]
             bill_dict[section_label] = {key: section_dict.get(key, []) + second_dict[key] for key in second_dict.keys()}
-            if end_of_section + 2 == 'Data':
+            if split_text_page[end_of_section + 2] == 'Data':
                 start_of_next_section = end_of_section + 4
             else:
                 start_of_next_section = end_of_section + 5

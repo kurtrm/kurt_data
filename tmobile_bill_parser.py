@@ -14,7 +14,7 @@ Sections will end, and new sections will start on the same page. 'Total:'
 is consistently the marker for the end of each section. Worth noting,
 the text two indeces ahead of this marker is the title of the next section,
 which we check to see if it's the last section 'Data'. (end + 2)
-TODO: Verify logic is correct for the while Loop.
+TODO: Verify logic is correct for the while loop in _parse_discontinous.
 
 We also grab the text two indeces behind 'Date and time' in order to use
 it as the key for the master bill_dict the function will return. (start - 2)
