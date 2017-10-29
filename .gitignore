@@ -104,4 +104,4 @@ ENV/
 /config.yml
 *.pdf
 src/data/
-src/bills
+src/bills/
