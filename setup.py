@@ -3,7 +3,7 @@ from setuptools import setup
 
 
 extra_packages = {
-    'testing': ['pytest-cov', 'tox']
+    'testing': ['pytest', 'pytest-cov', 'tox']
 }
 
 
@@ -14,6 +14,6 @@ setup(
     author='Kurt Maurer',
     author_email='kurtrm@gmail.com',
     license='MIT',
-    install_requires=['fitbit', 'pytest'],
+    install_requires=['fitbit', 'PyPDF2'],
     extras_require=extra_packages
 )
