@@ -103,4 +103,4 @@ ENV/
 # configuration files
 /config.yml
 *.pdf
-/data*
+src/data*
