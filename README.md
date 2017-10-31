@@ -27,4 +27,4 @@ To do:
     - Refactor current weighted graph implementation.
     - Write tests for PDF parser and weighted graph above.
     - Put it into an existing graph database.
-    - Make various visualizations using Matplotlib (See notebook for more information.)
+    - Make various visualizations using Matplotlib (See notebook for more information.
