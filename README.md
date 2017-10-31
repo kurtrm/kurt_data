@@ -20,3 +20,11 @@ My goals are to:
     [ ] Learn how to implement the data into existing libraries and databases.
     [ ] Determine how to weight each vertex or edge.
     [ ] Determine perspectives on the data and how to present each layer.
+
+To do:
+
+    - Refactor tables as described in notebook.
+    - Refactor current weighted graph implementation.
+    - Write tests for PDF parser and weighted graph above.
+    - Put it into an existing graph database.
+    - Make various visualizations using Matplotlib (See notebook for more information.)
