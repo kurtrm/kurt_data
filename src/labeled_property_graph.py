@@ -78,7 +78,7 @@ class LabeledPropertyGraph:
         """Return a list of nodes in the graph."""
         return [node for node in self._nodes.keys()]
 
-    def relationships(self):
+    def unique_relationships(self):
         """Return list of unique relationships."""
         #  This will likely not return what I'm looking for.
         return [relationship for relationship in self._relationships.keys()]
@@ -119,4 +119,29 @@ class LabeledPropertyGraph:
         else:
             raise KeyError('Node not in graph')  # More description
 
-    
+    def remove_relationship(self, name, node_a, node_b):
+        """Remove a relationship between two nodes."""
+        pass
+
+    def remove_node(self, name):
+        """Remove a node and all of its relationships."""
+        pass
+
+    def get_relationships(self, node_a, node_b):
+        """Return all relationships between two nodes."""
+        pass
+
+    def nodes_with_relationship(self, name):
+        """Return all nodes with a given relationship."""
+        pass
+
+    def get_relationship_properties(self, name, node_a, node_b):
+        """Return properties of a relationship between two nodes."""
+        pass
+
+    def get_node_properties(self, name):
+        """Return properties of a node."""
+        pass
+
+# Traversals
+# 
