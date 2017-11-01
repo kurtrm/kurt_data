@@ -87,9 +87,19 @@ class LabeledPropertyGraph:
         """Add a node and pass the name to the node.name."""
         if name not in self.nodes():
             node = Node(name)
-            self._graph[node] = {}
+            self._graph[name] = {}
+            self._nodes[name] = node
+        else:
+            raise KeyError('Node already exists in graph')
 
     def add_relationship(self, name, node_a, node_b):
         """Add a relationship between two nodes."""
-        relationship = Relationship(name)
-        self._graph[node_a]
+        nodes = self.nodes()
+        if node_a in nodes and node_b in nodes:
+            relationship = Relationship(name)
+            if self._graph[node_a].get(name):
+                if isinstance(self._graph[node_a][name], list):
+                    self._graph[node_a][name].append(node_b)
+                else:
+                    current_relationship = self._graph[node_a]
+                    self._graph[node_a][name] = [current_relationship, node_b]
