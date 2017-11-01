@@ -101,5 +101,22 @@ class LabeledPropertyGraph:
                 if isinstance(self._graph[node_a][name], list):
                     self._graph[node_a][name].append(node_b)
                 else:
-                    current_relationship = self._graph[node_a]
+                    current_relationship = self._graph[node_a][name]
                     self._graph[node_a][name] = [current_relationship, node_b]
+            else:
+                self._graph[node_a][name] = node_b
+            if self._relationships.get(name):
+                if self._relationships[name].get(node_a):
+                    if self._relationship[name][node_a].get(node_b):
+                        raise ValueError('Relationship already exists'
+                                         'between nodes')
+                    else:
+                        self._relationship[name][node_a][node_b] = relationship
+                else:
+                    self._relationship[name][node_a] = {node_b: relationship}
+            else:
+                self._relationships[name] = {node_a: {node_b: relationship}}
+        else:
+            raise KeyError('Node not in graph')  # More description
+
+    
