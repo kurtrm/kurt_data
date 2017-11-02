@@ -1,4 +1,6 @@
-# kurt_data
+[![Build Status](https://travis-ci.org/kurtrm/kurt_data.svg?branch=master)](https://travis-ci.org/kurtrm/kurt_data)
+
+# kurt's Data
 Repository to house scripts for personal data analysis.
 
 ## Fitbit Data
@@ -28,3 +30,7 @@ To do:
     - Write tests for PDF parser and weighted graph above.
     - Put it into an existing graph database.
     - Make various visualizations using Matplotlib (See notebook for more information.)
+
+## Google Maps Location History
+
+Plans to explore this are still in development.
