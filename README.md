@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/kurtrm/kurt_data.svg?branch=master)](https://travis-ci.org/kurtrm/kurt_data) [![Coverage Status](https://coveralls.io/repos/github/kurtrm/kurt_data/badge.svg?branch=master)](https://coveralls.io/github/kurtrm/kurt_data?branch=master)
 
-# kurt's Data
+# Sources of Data on Kurt
 Repository to house scripts for personal data analysis.
 
 ## Fitbit Data
@@ -30,6 +30,7 @@ To do:
     - Write tests for PDF parser and weighted graph above.
     - Put it into an existing graph database.
     - Make various visualizations using Matplotlib (See notebook for more information.)
+    - Rather than using a Python scheduler, write a Cron job for scheduling Fitbit pulls.
 
 ## Google Maps Location History
 

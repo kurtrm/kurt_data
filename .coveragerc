@@ -5,7 +5,6 @@ omit =
     scripts/__init__.py
     scripts/gather_keys_oauth2.py
     scripts/fitbit_data.py
-    scripts/scheduler.py
     scripts/parser_troubleshooting.py
 [report]
 show_missing = True
