@@ -13,6 +13,22 @@ def pdf_docs():
     return paths
 
 
+@pytest.fixture
+def pdf_docs_text(pdf_docs):
+    """Fixture that extracts text from the pdf."""
+    bills = []
+    for bill in pdf_docs:
+        page_texts = []
+        pdf_bill = PyPDF2.PdfFileReader(open(bill, 'rb'))
+        for page in range(3, pdf_bill.numPages):
+            raw_page = pdf_bill.getPage(page)
+            raw_text = raw_page.extractText()
+            prepared_page = raw_text.split('\n')
+            page_texts.append(prepared_page)
+        bills.append(page_texts)
+    return bills
+
+
 def test_third_page_as_start_assumption(pdf_docs):
     """Test that the starting page contains unique text."""
     for bill in pdf_docs:
@@ -38,3 +54,13 @@ def test_fourth_page_not_starting_point(pdf_docs):
         page = pdf_bill.getPage(2)
         page = page.extractText()
         assert 'Usage details' not in page
+
+
+def test_last_character_assumption_after_split(pdf_docs_text):
+    """Test that the last character is an empty string after splitting."""
+    for bill in pdf_docs_text:
+        for text in bill:
+            assert text[-1] == ''
+
+
+def test_
