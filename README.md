@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/kurtrm/kurt_data.svg?branch=master)](https://travis-ci.org/kurtrm/kurt_data)
 
+[![Coverage Status](https://coveralls.io/repos/github/kurtrm/kurt_data/badge.svg?branch=master)](https://coveralls.io/github/kurtrm/kurt_data?branch=master)
+
 # kurt's Data
 Repository to house scripts for personal data analysis.
 
