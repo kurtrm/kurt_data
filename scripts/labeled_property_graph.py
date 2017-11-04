@@ -92,7 +92,7 @@ class LabeledPropertyGraph:
         else:
             raise KeyError('Node already exists in graph')
 
-    def add_relationship(self, name, node_a, node_b):
+    def add_relationship(self, name, node_a, node_b):  # EAFP: REFACTOR
         """Add a relationship between two nodes."""
         nodes = self.nodes()
         if node_a in nodes and node_b in nodes:

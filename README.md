@@ -25,6 +25,7 @@ My goals are to:
 
 To do:
 
+    - Refactor all code for EAFP paradigm.
     - Refactor tables as described in notebook.
     - Refactor current weighted graph implementation.
     - Write tests for PDF parser and weighted graph above.
