@@ -17,7 +17,6 @@ significantly. Maintain for extracting bill text if something happens
 to the pickle.
 
 
-
 @pytest.fixture
 def pdf_docs_function(pdf_docs):
     Fixture that extracts text from the pdf.
