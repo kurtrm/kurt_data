@@ -61,3 +61,13 @@ def test_last_character_assumption_after_split(pdf_docs_text):
     for bill in pdf_docs_text:
         for text in bill:
             assert text[-1] == ''
+
+
+def test_all_data_gathered_continuous(pdf_docs_text):
+    """Ensure we're getting all the data from continuous records."""
+    for bill in pdf_docs_text:
+        for text in bill:
+            if 'Total' not in text:
+                date_time = text.index('Date and time')
+                sect_dict = tmobile_bill_parser._parse_continuous_records(text[date_time:], {})
+                assert len(text[date_time:]) == sum(len(sect_dict[key]) for key in sect_dict.keys())
