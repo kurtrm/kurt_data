@@ -1,9 +1,39 @@
-"""Test parser to ensure we are getting expected values."""
+"""
+Test parser to ensure we are getting expected values.
+
+Many tests target assumptions, not necessarily code.
+"""
 import os
+import pickle
 import pytest
 import PyPDF2
 
 from ..scripts import tmobile_bill_parser
+
+"""
+
+These fixtures maintained for posterity. Pickling reduced test times
+significantly. Maintain for extracting bill text if something happens
+to the pickle.
+
+
+
+@pytest.fixture
+def pdf_docs_function(pdf_docs):
+    Fixture that extracts text from the pdf.
+    paths = ['../bills/' + bill for bill in os.listdir('../bills')]
+    bills = []
+    for bill in paths:
+        page_texts = []
+        pdf_bill = PyPDF2.PdfFileReader(open(bill, 'rb'))
+        for page in range(3, pdf_bill.numPages):
+            raw_page = pdf_bill.getPage(page)
+            raw_text = raw_page.extractText()
+            prepared_page = raw_text.split('\n')
+            page_texts.append(prepared_page)
+        bills.append(page_texts)
+    return bills
+"""
 
 
 @pytest.fixture
@@ -14,18 +44,9 @@ def pdf_docs():
 
 
 @pytest.fixture
-def pdf_docs_text(pdf_docs):
-    """Fixture that extracts text from the pdf."""
-    bills = []
-    for bill in pdf_docs:
-        page_texts = []
-        pdf_bill = PyPDF2.PdfFileReader(open(bill, 'rb'))
-        for page in range(3, pdf_bill.numPages):
-            raw_page = pdf_bill.getPage(page)
-            raw_text = raw_page.extractText()
-            prepared_page = raw_text.split('\n')
-            page_texts.append(prepared_page)
-        bills.append(page_texts)
+def pdf_docs_text():
+    """Fixturize the pickle of the pdf texts."""
+    bills = pickle.load(open('text_docs.p', 'rb'))
     return bills
 
 
@@ -64,10 +85,14 @@ def test_last_character_assumption_after_split(pdf_docs_text):
 
 
 def test_all_data_gathered_continuous(pdf_docs_text):
-    """Ensure we're getting all the data from continuous records."""
+    """
+    Ensure we're getting all the data from continuous records.
+
+    We subtract 6 from the len in the assert to account for the column headers.
+    """
     for bill in pdf_docs_text:
         for text in bill:
             if 'Total' not in text:
                 date_time = text.index('Date and time')
                 sect_dict = tmobile_bill_parser._parse_continuous_records(text[date_time:], {})
-                assert len(text[date_time:]) == sum(len(sect_dict[key]) for key in sect_dict.keys())
+                assert len(text[date_time:]) - 6 == sum(len(sect_dict[key]) for key in sect_dict.keys())
