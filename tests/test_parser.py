@@ -120,3 +120,15 @@ def test_discontinuous_next_section_assumption(pdf_docs_text):
                 continue
             except AssertionError:
                 assert text[end + 5] == 'Date and time'
+
+
+def test_single_parser_error():
+    """Ensure value error raised in both functions."""
+    with pytest.raises(ValueError):
+        tmobile_bill_parser.parse_bill('/billybills')
+
+
+def test_multiple_parser_error():
+    """Ensure value error arised in this function too."""
+    with pytest.raises(ValueError):
+        tmobile_bill_parser.parse_multiple_bills('/filename')
