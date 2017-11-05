@@ -95,3 +95,28 @@ def test_all_data_gathered_continuous(pdf_docs_text):
                 date_time = text.index('Date and time')
                 sect_dict = tmobile_bill_parser._parse_continuous_records(text[date_time:], {})
                 assert len(text[date_time:]) - 6 == sum(len(sect_dict[key]) for key in sect_dict.keys())
+
+
+def test_discontinuous_section_label_assumption(pdf_docs_text):
+    """Ensure section label is constant on discontinuous records."""
+    for bill in pdf_docs_text:
+        for text in bill:
+            if 'Total:' in text:
+                date_time = text.index('Date and time')
+                assert text[date_time - 2] in ['Text', 'Talk', 'Data']
+
+
+def test_discontinuous_next_section_assumption(pdf_docs_text):
+    """Ensure section label is constant on discontinuous records."""
+    for bill in pdf_docs_text:
+        for text in bill:
+            try:
+                end = text.index('Total:')
+            except ValueError:
+                continue
+            try:
+                assert text[end + 4] == 'Date and time'
+            except IndexError:
+                continue
+            except AssertionError:
+                assert text[end + 5] == 'Date and time'
