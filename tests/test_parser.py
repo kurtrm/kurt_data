@@ -106,9 +106,17 @@ def test_discontinuous_section_label_assumption(pdf_docs_text):
                 assert text[date_time - 2] in ['Text', 'Talk', 'Data']
 
 
-# def test_discontinuous_next_section_assumption(pdf_docs_text):
-#     """Ensure section label is constant on discontinuous records."""
-#     for bill in pdf_docs_text:
-#         for text in bill:
-#             if 'Total:' in text:
-#                 date_time = text.index('Date and time')
+def test_discontinuous_next_section_assumption(pdf_docs_text):
+    """Ensure section label is constant on discontinuous records."""
+    for bill in pdf_docs_text:
+        for text in bill:
+            try:
+                end = text.index('Total:')
+            except ValueError:
+                continue
+            try:
+                assert text[end + 4] == 'Date and time'
+            except IndexError:
+                continue
+            except AssertionError:
+                assert text[end + 5] == 'Date and time'
