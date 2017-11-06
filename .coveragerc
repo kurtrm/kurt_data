@@ -1,10 +1,12 @@
 [run]
 source = 
-    scripts/
+    scripts/labeled_property_graph.py
 omit = 
     scripts/__init__.py
     scripts/gather_keys_oauth2.py
     scripts/fitbit_data.py
     scripts/parser_troubleshooting.py
+    scripts/eafp_refactor.py
+    scripts/tmobile_bill_parser.py
 [report]
-show_missing = True
+show_missing = False

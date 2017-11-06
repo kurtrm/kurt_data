@@ -38,7 +38,7 @@ def pdf_docs_function(pdf_docs):
 @pytest.fixture
 def pdf_docs():
     """Fixture containing all bills."""
-    paths = ['../bills/' + bill for bill in os.listdir('../bills')]
+    paths = ['/bills/' + bill for bill in os.listdir('/bills')]
     return paths
 
 

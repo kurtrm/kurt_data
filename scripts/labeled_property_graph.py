@@ -107,25 +107,68 @@ class LabeledPropertyGraph:
                 self._graph[node_a][name] = node_b
             if self._relationships.get(name):
                 if self._relationships[name].get(node_a):
-                    if self._relationship[name][node_a].get(node_b):
+                    if self._relationships[name][node_a].get(node_b):
                         raise ValueError('Relationship already exists'
                                          'between nodes')
                     else:
-                        self._relationship[name][node_a][node_b] = relationship
+                        self._relationships[name][node_a][node_b] = relationship
                 else:
-                    self._relationship[name][node_a] = {node_b: relationship}
+                    self._relationships[name][node_a] = {node_b: relationship}
             else:
                 self._relationships[name] = {node_a: {node_b: relationship}}
         else:
-            raise KeyError('Node not in graph')  # More description
-
+            raise KeyError('Node not in graph')
+    """  ================ add_relationship refactor ========================
+    def add_relationship(self, name, node_a, node_b):
+        Refactored add_relationship for EAFP.
+        nodes = self.nodes()
+        if self._relationship[name][node_a].get(node_b):
+            raise ValueError('Relationship already exists between nodes')
+        elif node_a in nodes or node_b in nodes:
+            raise KeyError('A node is not present in this graph')
+        try:
+            self._relationship[name][node_a][node_b] = Relationship(name)
+        except KeyError as key:
+            if key == name:
+                self._relationships[name] = {node_a: {node_b: Relationship(name)}}
+            elif key == node_a:
+                self._relationship[name][node_a] = {node_b: Relationship(name)}
+            else:
+                self._relationship[name][node_a][node_b] = Relationship(name)
+        try:
+            self._graph[node_a][node_b].append(name)
+        except AttributeError:
+            curr_rel = self._graph[node_a][node_b]
+            self._graph[node_a][node_b] = [curr_rel, name]
+        except KeyError:
+            self._graph[node_a][node_b] = name
+    ======================================================================== """
     def remove_relationship(self, name, node_a, node_b):
         """Remove a relationship between two nodes."""
-        pass
+        del self._relationships[name][node_a][node_b]
+        try:
+            self._graph[node_a][node_b].remove(name)
+        except AttributeError:
+            del self._graph[node_a][node_b]
 
     def remove_node(self, name):
         """Remove a node and all of its relationships."""
-        pass
+        self._nodes.remove(name)
+        for relationship in self._relationships:
+            try:
+                del self._relationships[relationship][name]
+            except KeyError:
+                continue
+            for node_a in relationship:
+                del self._relationship[node_a][name]
+        del self._graph[name]
+        #  The following needs to be refactored, as it would be computationally
+        #  expensive to iterate over all of the nodes in a possibly huge graph.
+        for node in self._graph:
+            try:
+                del self._graph[node][name]
+            except KeyError:
+                continue
 
     def get_relationships(self, node_a, node_b):
         """Return all relationships between two nodes."""
