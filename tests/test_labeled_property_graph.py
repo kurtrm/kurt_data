@@ -4,8 +4,8 @@ import pytest
 
 
 @pytest.fixture
-def labeled_property_graph():
-    """Fixture of lpg for testing."""
+def lpg():
+    """Fixture of labeled property graph(lpg) for testing."""
     from kurt_data.scripts.labeled_property_graph import LabeledPropertyGraph
     lpg = LabeledPropertyGraph()
     return lpg
@@ -13,68 +13,108 @@ def labeled_property_graph():
 # ==================== Nodes ======================
 
 
-def test_empty_lpg_nodes(labeled_property_graph):
+def test_empty_lpg_nodes(lpg):
     """Ensure it returns none if no nodes in lpg."""
-    assert labeled_property_graph.nodes() == []
+    assert lpg.nodes() == []
 
 
-def test_empty_lpg_relationships(labeled_property_graph):
+def test_empty_lpg_relationships(lpg):
     """Ensure it returns none if no relationships."""
-    assert labeled_property_graph.nodes() == []
+    assert lpg.nodes() == []
 
 
-def test_adding_node(labeled_property_graph):
+def test_adding_node(lpg):
     """Ensure we can successfully add nodes to lpg."""
-    labeled_property_graph.add_node('Kurt')
-    labeled_property_graph.nodes() == ['Kurt']
+    lpg.add_node('Kurt')
+    lpg.nodes() == ['Kurt']
 
 
-def test_adding_node_error(labeled_property_graph):
+def test_adding_node_error(lpg):
     """Ensure error raised if node already exists."""
-    labeled_property_graph.add_node('Kurt')
+    lpg.add_node('Kurt')
     with pytest.raises(KeyError):
-        labeled_property_graph.add_node('Kurt')
+        lpg.add_node('Kurt')
 
 
-# def test_removing_node_from_empty(labeled_property_graph):
+# def test_removing_node_from_empty(lpg):
 #     """Ensure we get error when removing from empty lpg."""
 #     with pytest.raises(ValueError):
-#         labeled_property_graph.remove_node('Kurt')
+#         lpg.remove_node('Kurt')
 
 # ================== Relationsihps ================
 
 
-def test_adding_rel_to_empty_lpg(labeled_property_graph):
+def test_adding_rel_to_empty_lpg(lpg):
     """Ensure we can't add relationships between nonexistent nodes."""
     with pytest.raises(KeyError):
-        labeled_property_graph.add_relationship('durka', 'Will', 'Bill')
+        lpg.add_relationship('durka', 'Will', 'Bill')
 
 
-def test_adding_rel_one_node_dne(labeled_property_graph):
+def test_adding_rel_one_node_dne(lpg):
     """Ensure we can add relationships between existent and non-existent."""
-    labeled_property_graph.add_node('Kurt')
+    lpg.add_node('Kurt')
     with pytest.raises(KeyError):
-        labeled_property_graph.add_relationship('durka', 'Kurt', 'Bill')
+        lpg.add_relationship('durka', 'Kurt', 'Bill')
 
 
-def test_adding_rel_other_dne(labeled_property_graph):
+def test_adding_rel_other_dne(lpg):
     """Ensure second parameter works as well."""
-    labeled_property_graph.add_node('Billy')
+    lpg.add_node('Billy')
     with pytest.raises(KeyError):
-        labeled_property_graph.add_relationship('durka', 'Kurt', 'Billy')
+        lpg.add_relationship('durka', 'Kurt', 'Billy')
 
 
-def test_adding_rel_success(labeled_property_graph):
+def test_adding_rel_success(lpg):
     """Ensure successful of adding a relationship."""
-    labeled_property_graph.add_node('Kurt')
-    labeled_property_graph.add_node('Meliss')
-    labeled_property_graph.add_relationship('rel', 'Kurt', 'Meliss')
-    assert labeled_property_graph.unique_relationships() == ['rel']
+    lpg.add_node('Kurt')
+    lpg.add_node('Meliss')
+    lpg.add_relationship('rel', 'Kurt', 'Meliss')
+    assert lpg.unique_relationships() == ['rel']
 
 
-def test_adding_rel_success_view(labeled_property_graph):
+def test_adding_rel_success_view(lpg):
     """Ensure we can see the relationship as a key in the dict."""
-    labeled_property_graph.add_node('Kurt')
-    labeled_property_graph.add_node('Meliss')
-    labeled_property_graph.add_relationship('rel', 'Kurt', 'Meliss')
-    assert labeled_property_graph._graph['Kurt'] == {'rel': 'Meliss'}
+    lpg.add_node('Kurt')
+    lpg.add_node('Meliss')
+    lpg.add_relationship('rel', 'Kurt', 'Meliss')
+    assert (lpg._graph['Kurt'],
+            lpg._relationships['rel']['Kurt']['Meliss'].name) == ({'rel': 'Meliss'}, 'rel')
+
+""" ===== For EAFP refactor of add_relationship ======
+def test_adding_rel_success_view(lpg):
+    Ensure we can see the relationship as a key in the dict.
+    lpg.add_node('Kurt')
+    lpg.add_node('Meliss')
+    lpg.add_relationship('rel', 'Kurt', 'Meliss')
+    assert (lpg._graph['Kurt'],
+            lpg._relationships['rel']['Kurt']['Meliss'].name) == ({'Melissa': 'rel'}, 'rel')
+"""
+
+
+def test_adding_rel_with_other_rels(lpg):
+    """Ensure we can add to a list of rels in _graph."""
+    lpg.add_node('Kurt')
+    lpg.add_node('Meliss')
+    lpg.add_node('Mom')
+    lpg.add_relationship('rel', 'Kurt', 'Meliss')
+    lpg.add_relationship('rel', 'Kurt', 'Mom')
+    graph_key = lpg._graph['Kurt']
+    rel_node = lpg._relationships['rel']['Kurt']['Meliss']
+    assert (graph_key,
+            rel_node.name) == ({'rel': ['Meliss', 'Mom']}, 'rel')
+
+
+""" ===== For EAFP refactor of add_relationship =====
+def test_adding_rel_with_other_rels(lpg):
+    Ensure we can add to a list of rels in _graph.
+    lpg.add_node('Kurt')
+    lpg.add_node('Meliss')
+    lpg.add_relationship('rel', 'Kurt', 'Meliss')
+    lpg.add_relationship('gf', 'Kurt', 'Meliss')
+    graph_key = lpg._graph['Kurt']
+    rel_node = lpg._relationships['re']['Kurt']['Meliss']
+    gf_node = lpg._relationships['gf']['Kurt']['Meliss']
+    assert (graph_key,
+            rel_node.name,
+            gf_node.name) == ({'Meliss': ['rel', 'gf']}, 'rel', 'gf')
+"""
