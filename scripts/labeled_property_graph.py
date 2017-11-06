@@ -107,13 +107,13 @@ class LabeledPropertyGraph:
                 self._graph[node_a][name] = node_b
             if self._relationships.get(name):
                 if self._relationships[name].get(node_a):
-                    if self._relationship[name][node_a].get(node_b):
+                    if self._relationships[name][node_a].get(node_b):
                         raise ValueError('Relationship already exists'
                                          'between nodes')
                     else:
-                        self._relationship[name][node_a][node_b] = relationship
+                        self._relationships[name][node_a][node_b] = relationship
                 else:
-                    self._relationship[name][node_a] = {node_b: relationship}
+                    self._relationships[name][node_a] = {node_b: relationship}
             else:
                 self._relationships[name] = {node_a: {node_b: relationship}}
         else:
