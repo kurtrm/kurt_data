@@ -145,11 +145,30 @@ class LabeledPropertyGraph:
     ======================================================================== """
     def remove_relationship(self, name, node_a, node_b):
         """Remove a relationship between two nodes."""
-        pass
+        del self._relationships[name][node_a][node_b]
+        try:
+            self._graph[node_a][node_b].remove(name)
+        except AttributeError:
+            del self._graph[node_a][node_b]
 
     def remove_node(self, name):
         """Remove a node and all of its relationships."""
-        pass
+        self._nodes.remove(name)
+        for relationship in self._relationships:
+            try:
+                del self._relationships[relationship][name]
+            except KeyError:
+                continue
+            for node_a in relationship:
+                del self._relationship[node_a][name]
+        del self._graph[name]
+        #  The following needs to be refactored, as it would be computationally
+        #  expensive to iterate over all of the nodes in a possibly huge graph.
+        for node in self._graph:
+            try:
+                del self._graph[node][name]
+            except KeyError:
+                continue
 
     def get_relationships(self, node_a, node_b):
         """Return all relationships between two nodes."""
