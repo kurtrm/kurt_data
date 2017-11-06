@@ -8,7 +8,7 @@ import pickle
 import pytest
 import PyPDF2
 
-from ..scripts import tmobile_bill_parser
+from ..scripts import tmobile_bill_parser as parser
 
 """
 
@@ -92,9 +92,10 @@ def test_all_data_gathered_continuous(pdf_docs_text):
     for bill in pdf_docs_text:
         for text in bill:
             if 'Total' not in text:
-                date_time = text.index('Date and time')
-                sect_dict = tmobile_bill_parser._parse_continuous_records(text[date_time:], {})
-                assert len(text[date_time:]) - 6 == sum(len(sect_dict[key]) for key in sect_dict.keys())
+                datetime = text.index('Date and time')
+                sect = parser._parse_continuous_records(text[datetime:], {})
+                assert len(text[datetime:]) - 6 == sum(len(sect[key])
+                                                       for key in sect.keys())
 
 
 def test_discontinuous_section_label_assumption(pdf_docs_text):
@@ -120,3 +121,15 @@ def test_discontinuous_next_section_assumption(pdf_docs_text):
                 continue
             except AssertionError:
                 assert text[end + 5] == 'Date and time'
+
+
+def test_single_parser_error():
+    """Ensure value error raised in both functions."""
+    with pytest.raises(ValueError):
+        parser.parse_bill('/billybills')
+
+
+def test_multiple_parser_error():
+    """Ensure value error arised in this function too."""
+    with pytest.raises(ValueError):
+        parser.parse_multiple_bills('/filename')
