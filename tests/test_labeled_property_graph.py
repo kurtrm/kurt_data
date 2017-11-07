@@ -72,23 +72,34 @@ def test_adding_rel_success(lpg):
     assert lpg.unique_relationships() == ['rel']
 
 
+# def test_adding_rel_success_view(lpg):
+#     """Ensure we can see the relationship as a key in the dict."""
+#     lpg.add_node('Kurt')
+#     lpg.add_node('Meliss')
+#     lpg.add_relationship('rel', 'Kurt', 'Meliss')
+#     assert (lpg._graph['Kurt'],
+#             lpg._relationships['rel']['Kurt']['Meliss'].name) == ({'rel': 'Meliss'}, 'rel')
+
 def test_adding_rel_success_view(lpg):
     """Ensure we can see the relationship as a key in the dict."""
     lpg.add_node('Kurt')
     lpg.add_node('Meliss')
     lpg.add_relationship('rel', 'Kurt', 'Meliss')
     assert (lpg._graph['Kurt'],
-            lpg._relationships['rel']['Kurt']['Meliss'].name) == ({'rel': 'Meliss'}, 'rel')
+            lpg._relationships['rel']['Kurt']['Meliss'].name) == ({'Meliss': 'rel'}, 'rel')
 
-""" ===== For EAFP refactor of add_relationship ======
-def test_adding_rel_success_view(lpg):
-    Ensure we can see the relationship as a key in the dict.
-    lpg.add_node('Kurt')
-    lpg.add_node('Meliss')
-    lpg.add_relationship('rel', 'Kurt', 'Meliss')
-    assert (lpg._graph['Kurt'],
-            lpg._relationships['rel']['Kurt']['Meliss'].name) == ({'Melissa': 'rel'}, 'rel')
-"""
+
+# def test_adding_rel_with_other_rels(lpg):
+#     """Ensure we can add to a list of rels in _graph."""
+#     lpg.add_node('Kurt')
+#     lpg.add_node('Meliss')
+#     lpg.add_node('Mom')
+#     lpg.add_relationship('rel', 'Kurt', 'Meliss')
+#     lpg.add_relationship('rel', 'Kurt', 'Mom')
+#     graph_key = lpg._graph['Kurt']
+#     rel_node = lpg._relationships['rel']['Kurt']['Meliss']
+#     assert (graph_key,
+#             rel_node.name) == ({'rel': ['Meliss', 'Mom']}, 'rel')
 
 
 def test_adding_rel_with_other_rels(lpg):
@@ -101,20 +112,4 @@ def test_adding_rel_with_other_rels(lpg):
     graph_key = lpg._graph['Kurt']
     rel_node = lpg._relationships['rel']['Kurt']['Meliss']
     assert (graph_key,
-            rel_node.name) == ({'rel': ['Meliss', 'Mom']}, 'rel')
-
-
-""" ===== For EAFP refactor of add_relationship =====
-def test_adding_rel_with_other_rels(lpg):
-    Ensure we can add to a list of rels in _graph.
-    lpg.add_node('Kurt')
-    lpg.add_node('Meliss')
-    lpg.add_relationship('rel', 'Kurt', 'Meliss')
-    lpg.add_relationship('gf', 'Kurt', 'Meliss')
-    graph_key = lpg._graph['Kurt']
-    rel_node = lpg._relationships['re']['Kurt']['Meliss']
-    gf_node = lpg._relationships['gf']['Kurt']['Meliss']
-    assert (graph_key,
-            rel_node.name,
-            gf_node.name) == ({'Meliss': ['rel', 'gf']}, 'rel', 'gf')
-"""
+            rel_node.name) == ({'Meliss': 'rel', 'Mom': 'rel'}, 'rel')
