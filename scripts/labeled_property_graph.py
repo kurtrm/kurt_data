@@ -192,5 +192,20 @@ class LabeledPropertyGraph:
         """Return properties of a node."""
         return list(self._nodes[name].properties.keys())
 
+    def has_neighbor(self, node_a, node_b):
+        """Return boolean whether a node has a certain neighbor."""
+        try:
+            return node_b in self._graph[node_a]
+        except KeyError:
+            raise KeyError('{} not in graph'.format(node_a))
+
+    def has_relationship(self, node_a, node_b, relationship, both_ways=False):
+        """Return whether node_a has a given rel to node_b or vice_versa."""
+        if both_ways:
+            return relationship in self._graph[node_a][node_b] \
+                and relationship in self._graph[node_b][node_a]
+        return relationship in self._graph[node_a][node_b]
+
+
 # TODO: Traversals
 # TODO: Add an option make a relationship bi-directional betwen two nodes
