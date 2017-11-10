@@ -93,6 +93,7 @@ class LabeledPropertyGraph:
 
     def add_relationship(self, name, node_a, node_b, both_ways=False):
         """Refactored add_relationship for EAFP."""
+        # NEED LOGIC SO A NODE CANT HAVE A REL WITH ITSELF
         nodes = self.nodes()
         if node_a not in nodes or node_b not in nodes:
             raise KeyError('A node is not present in this graph')
@@ -141,12 +142,15 @@ class LabeledPropertyGraph:
     def remove_node(self, name):
         """Remove a node and all of its relationships."""
         for relationship in self._relationships:
+            for node in self._relationships[relationship]:
+                try:
+                    del self._relationships[relationship][node][name]
+                except KeyError:
+                    continue
             try:
                 del self._relationships[relationship][name]
             except KeyError:
                 continue
-            for node_a in relationship:
-                del self._relationship[node_a][name]
         del self._graph[name]
         #  The following needs to be refactored, as it would be computationally
         #  expensive to iterate over all of the nodes in a possibly huge graph.

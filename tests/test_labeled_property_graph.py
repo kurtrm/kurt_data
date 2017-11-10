@@ -80,6 +80,29 @@ def test_removing_node_from_empty(lpg):
     with pytest.raises(KeyError):
         lpg.remove_node('Kurt')
 
+
+def test_removing_nodes_with_many_connections(loaded_lpg):
+    """Ensure relationships to deleted node are cleared."""
+    loaded_lpg.add_node('Wendy')
+    for node in ['Charlie', 'Unicorn', 'Pegasus']:
+        loaded_lpg.add_relationship('friends', 'Wendy', node)
+    for rel, node in zip(['boss', 'parent', 'administrator'], ['Charlie', 'Unicorn', 'Pegasus']):
+        loaded_lpg.add_relationship(rel, node, 'Wendy')
+    loaded_lpg.remove_node('Wendy')
+    for rel in loaded_lpg._relationships:
+        assert 'Wendy' not in loaded_lpg._relationships[rel]
+
+
+# def test_removing_nodes_with_additional_conns(loaded_lpg):
+#     """Ensure the relationship dict is changed appropriately."""
+#     loaded_lpg.add_node('Wendy')
+#     for node in ['Charlie', 'Unicorn', 'Pegasus']:
+#         loaded_lpg.add_relationship('friends', 'Wendy', node)
+#     for rel, node in zip(['boss', 'parent', 'administrator'], ['Charlie', 'Unicorn', 'Pegasus']):
+#         loaded_lpg.add_relationship(rel, node, 'Wendy')
+#     loaded_lpg.remove_node('Wendy')
+    
+
 # ================== Relationsihps ================
 
 
@@ -199,3 +222,7 @@ def test_removing_rel_single(loaded_lpg):
     loaded_lpg.remove_relationship('buddies', 'Charlie', 'Unicorn')
     with pytest.raises(KeyError):
         loaded_lpg._graph['Charlie']['Unicorn'] == []
+
+
+
+
