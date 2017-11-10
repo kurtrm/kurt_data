@@ -83,25 +83,17 @@ def test_removing_node_from_empty(lpg):
 
 def test_removing_nodes_with_many_connections(loaded_lpg):
     """Ensure relationships to deleted node are cleared."""
+    loaded_lpg.add_node('Isolated')
     loaded_lpg.add_node('Wendy')
     for node in ['Charlie', 'Unicorn', 'Pegasus']:
         loaded_lpg.add_relationship('friends', 'Wendy', node)
-    for rel, node in zip(['boss', 'parent', 'administrator'], ['Charlie', 'Unicorn', 'Pegasus']):
+    for rel, node in zip(['boss', 'parent', 'administrator'],
+                         ['Charlie', 'Unicorn', 'Pegasus']):
         loaded_lpg.add_relationship(rel, node, 'Wendy')
     loaded_lpg.remove_node('Wendy')
     for rel in loaded_lpg._relationships:
         assert 'Wendy' not in loaded_lpg._relationships[rel]
 
-
-# def test_removing_nodes_with_additional_conns(loaded_lpg):
-#     """Ensure the relationship dict is changed appropriately."""
-#     loaded_lpg.add_node('Wendy')
-#     for node in ['Charlie', 'Unicorn', 'Pegasus']:
-#         loaded_lpg.add_relationship('friends', 'Wendy', node)
-#     for rel, node in zip(['boss', 'parent', 'administrator'], ['Charlie', 'Unicorn', 'Pegasus']):
-#         loaded_lpg.add_relationship(rel, node, 'Wendy')
-#     loaded_lpg.remove_node('Wendy')
-    
 
 # ================== Relationsihps ================
 
@@ -140,7 +132,8 @@ def test_adding_rel_success_view(lpg):
     lpg.add_node('Meliss')
     lpg.add_relationship('rel', 'Kurt', 'Meliss')
     assert (lpg._graph['Kurt'],
-            lpg._relationships['rel']['Kurt']['Meliss'].name) == ({'Meliss': 'rel'}, 'rel')
+            lpg._relationships['rel']['Kurt']['Meliss'].name) == \
+        ({'Meliss': 'rel'}, 'rel')
 
 
 def test_adding_rel_with_other_rels(lpg):
@@ -187,7 +180,8 @@ def test_adding_both_ways_success_rels(lpg):
     lpg.add_node('Charlie')
     lpg.add_node('Unicorn')
     lpg.add_relationship('buddies', 'Charlie', 'Unicorn', both_ways=True)
-    assert lpg._relationships['buddies']['Charlie']['Unicorn'].name == lpg._relationships['buddies']['Unicorn']['Charlie'].name
+    assert lpg._relationships['buddies']['Charlie']['Unicorn'].name == \
+        lpg._relationships['buddies']['Unicorn']['Charlie'].name
 
 
 def test_coniditionals_in_add_rels(lpg):
@@ -197,7 +191,8 @@ def test_coniditionals_in_add_rels(lpg):
     lpg.add_node('Pegasus')
     lpg.add_relationship('buddies', 'Charlie', 'Unicorn', both_ways=True)
     lpg.add_relationship('buddies', 'Charlie', 'Pegasus')
-    assert lpg._graph['Charlie']['Pegasus'] == lpg._relationships['buddies']['Charlie']['Pegasus'].name
+    assert lpg._graph['Charlie']['Pegasus'] == \
+        lpg._relationships['buddies']['Charlie']['Pegasus'].name
 
 
 def test_adding_another_rel_between_nodes(lpg):
@@ -207,7 +202,8 @@ def test_adding_another_rel_between_nodes(lpg):
     lpg.add_node('Pegasus')
     lpg.add_relationship('buddies', 'Charlie', 'Unicorn', both_ways=True)
     lpg.add_relationship('cousins', 'Charlie', 'Unicorn')
-    assert lpg._graph['Charlie']['Unicorn'][1] == lpg._relationships['cousins']['Charlie']['Unicorn'].name
+    assert lpg._graph['Charlie']['Unicorn'][1] == \
+        lpg._relationships['cousins']['Charlie']['Unicorn'].name
 
 
 def test_removing_rel(loaded_lpg):
@@ -223,6 +219,18 @@ def test_removing_rel_single(loaded_lpg):
     with pytest.raises(KeyError):
         loaded_lpg._graph['Charlie']['Unicorn'] == []
 
+# ================ RETRIEVAL =============================
 
 
+def test_get_relationships(loaded_lpg):
+    """Ensure returns correct relationships."""
+    loaded_lpg.add_relationship('guys', 'Charlie', 'Pegasus')
+    assert loaded_lpg.get_relationships('Charlie',
+                                        'Pegasus') == \
+        loaded_lpg._graph['Charlie']['Pegasus']
 
+
+def test_nodes_with_relationships(loaded_lpg):
+    """Ensure returns correction relationships."""
+    assert loaded_lpg.nodes_with_relationship('buddies') == \
+        list(loaded_lpg._relationships['buddies'].keys())
