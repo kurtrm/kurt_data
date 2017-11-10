@@ -36,10 +36,10 @@ def test_adding_node_error(lpg):
         lpg.add_node('Kurt')
 
 
-# def test_removing_node_from_empty(lpg):
-#     """Ensure we get error when removing from empty lpg."""
-#     with pytest.raises(ValueError):
-#         lpg.remove_node('Kurt')
+def test_removing_node_from_empty(lpg):
+    """Ensure we get error when removing from empty lpg."""
+    with pytest.raises(KeyError):
+        lpg.remove_node('Kurt')
 
 # ================== Relationsihps ================
 
@@ -72,14 +72,6 @@ def test_adding_rel_success(lpg):
     assert lpg.unique_relationships() == ['rel']
 
 
-# def test_adding_rel_success_view(lpg):
-#     """Ensure we can see the relationship as a key in the dict."""
-#     lpg.add_node('Kurt')
-#     lpg.add_node('Meliss')
-#     lpg.add_relationship('rel', 'Kurt', 'Meliss')
-#     assert (lpg._graph['Kurt'],
-#             lpg._relationships['rel']['Kurt']['Meliss'].name) == ({'rel': 'Meliss'}, 'rel')
-
 def test_adding_rel_success_view(lpg):
     """Ensure we can see the relationship as a key in the dict."""
     lpg.add_node('Kurt')
@@ -87,19 +79,6 @@ def test_adding_rel_success_view(lpg):
     lpg.add_relationship('rel', 'Kurt', 'Meliss')
     assert (lpg._graph['Kurt'],
             lpg._relationships['rel']['Kurt']['Meliss'].name) == ({'Meliss': 'rel'}, 'rel')
-
-
-# def test_adding_rel_with_other_rels(lpg):
-#     """Ensure we can add to a list of rels in _graph."""
-#     lpg.add_node('Kurt')
-#     lpg.add_node('Meliss')
-#     lpg.add_node('Mom')
-#     lpg.add_relationship('rel', 'Kurt', 'Meliss')
-#     lpg.add_relationship('rel', 'Kurt', 'Mom')
-#     graph_key = lpg._graph['Kurt']
-#     rel_node = lpg._relationships['rel']['Kurt']['Meliss']
-#     assert (graph_key,
-#             rel_node.name) == ({'rel': ['Meliss', 'Mom']}, 'rel')
 
 
 def test_adding_rel_with_other_rels(lpg):
