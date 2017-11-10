@@ -12,12 +12,18 @@ def lpg():
     return lpg
 
 
-# @pytest.fixture
-# def loaded_lpg():
-#     """Fixture of a loaded lpg."""
-#     from kurt_data.scripts.labeled_property_graph import LabeledPropertyGraph
-#     lpg = LabeledPropertyGraph()
-#     lpg
+@pytest.fixture
+def loaded_lpg():
+    """Fixture of a loaded lpg."""
+    from kurt_data.scripts.labeled_property_graph import LabeledPropertyGraph
+    lpg = LabeledPropertyGraph()
+    lpg.add_node('Charlie')
+    lpg.add_node('Unicorn')
+    lpg.add_node('Pegasus')
+    lpg.add_relationship('buddies', 'Charlie', 'Unicorn', both_ways=True)
+    lpg.add_relationship('cousins', 'Charlie', 'Unicorn')
+
+    return lpg
 
 # ==================== Nodes ======================
 
@@ -74,6 +80,21 @@ def test_removing_node_from_empty(lpg):
     with pytest.raises(KeyError):
         lpg.remove_node('Kurt')
 
+
+def test_removing_nodes_with_many_connections(loaded_lpg):
+    """Ensure relationships to deleted node are cleared."""
+    loaded_lpg.add_node('Isolated')
+    loaded_lpg.add_node('Wendy')
+    for node in ['Charlie', 'Unicorn', 'Pegasus']:
+        loaded_lpg.add_relationship('friends', 'Wendy', node)
+    for rel, node in zip(['boss', 'parent', 'administrator'],
+                         ['Charlie', 'Unicorn', 'Pegasus']):
+        loaded_lpg.add_relationship(rel, node, 'Wendy')
+    loaded_lpg.remove_node('Wendy')
+    for rel in loaded_lpg._relationships:
+        assert 'Wendy' not in loaded_lpg._relationships[rel]
+
+
 # ================== Relationsihps ================
 
 
@@ -111,7 +132,8 @@ def test_adding_rel_success_view(lpg):
     lpg.add_node('Meliss')
     lpg.add_relationship('rel', 'Kurt', 'Meliss')
     assert (lpg._graph['Kurt'],
-            lpg._relationships['rel']['Kurt']['Meliss'].name) == ({'Meliss': 'rel'}, 'rel')
+            lpg._relationships['rel']['Kurt']['Meliss'].name) == \
+        ({'Meliss': 'rel'}, 'rel')
 
 
 def test_adding_rel_with_other_rels(lpg):
@@ -158,7 +180,8 @@ def test_adding_both_ways_success_rels(lpg):
     lpg.add_node('Charlie')
     lpg.add_node('Unicorn')
     lpg.add_relationship('buddies', 'Charlie', 'Unicorn', both_ways=True)
-    assert lpg._relationships['buddies']['Charlie']['Unicorn'].name == lpg._relationships['buddies']['Unicorn']['Charlie'].name
+    assert lpg._relationships['buddies']['Charlie']['Unicorn'].name == \
+        lpg._relationships['buddies']['Unicorn']['Charlie'].name
 
 
 def test_coniditionals_in_add_rels(lpg):
@@ -168,4 +191,60 @@ def test_coniditionals_in_add_rels(lpg):
     lpg.add_node('Pegasus')
     lpg.add_relationship('buddies', 'Charlie', 'Unicorn', both_ways=True)
     lpg.add_relationship('buddies', 'Charlie', 'Pegasus')
-    assert lpg._graph['Charlie']['Pegasus'] == lpg._relationships['buddies']['Charlie']['Pegasus'].name
+    assert lpg._graph['Charlie']['Pegasus'] == \
+        lpg._relationships['buddies']['Charlie']['Pegasus'].name
+
+
+def test_adding_another_rel_between_nodes(lpg):
+    """Ensure we except attribute error."""
+    lpg.add_node('Charlie')
+    lpg.add_node('Unicorn')
+    lpg.add_node('Pegasus')
+    lpg.add_relationship('buddies', 'Charlie', 'Unicorn', both_ways=True)
+    lpg.add_relationship('cousins', 'Charlie', 'Unicorn')
+    assert lpg._graph['Charlie']['Unicorn'][1] == \
+        lpg._relationships['cousins']['Charlie']['Unicorn'].name
+
+
+def test_removing_rel(loaded_lpg):
+    """Ensure relationships can be removed."""
+    loaded_lpg.remove_relationship('cousins', 'Charlie', 'Unicorn')
+    assert loaded_lpg._graph['Charlie']['Unicorn'] == 'buddies'
+
+
+def test_removing_rel_single(loaded_lpg):
+    """Ensure relationships can be removed."""
+    loaded_lpg.remove_relationship('cousins', 'Charlie', 'Unicorn')
+    loaded_lpg.remove_relationship('buddies', 'Charlie', 'Unicorn')
+    with pytest.raises(KeyError):
+        loaded_lpg._graph['Charlie']['Unicorn'] == []
+
+# ================ RETRIEVAL =============================
+
+
+def test_get_relationships(loaded_lpg):
+    """Ensure returns correct relationships."""
+    loaded_lpg.add_relationship('guys', 'Charlie', 'Pegasus')
+    assert loaded_lpg.get_relationships('Charlie',
+                                        'Pegasus') == \
+        loaded_lpg._graph['Charlie']['Pegasus']
+
+
+def test_nodes_with_relationships(loaded_lpg):
+    """Ensure returns correction relationships."""
+    assert loaded_lpg.nodes_with_relationship('buddies') == \
+        list(loaded_lpg._relationships['buddies'].keys())
+
+
+def test_get_neighbors(loaded_lpg):
+    """Ensure returns keys of _graph."""
+    loaded_lpg.add_node('Willy')
+    loaded_lpg.add_node('Billy')
+    loaded_lpg.add_node('Gilly')
+    loaded_lpg.add_node('Lilly')
+    for node in loaded_lpg._graph:
+        if node == 'Billy':
+            continue
+        loaded_lpg.add_relationship('acquaintances', 'Billy', node)
+    assert loaded_lpg.nodes_with_relationship('acquaintances') == \
+        list(loaded_lpg._relationships['acquaintances'].keys())

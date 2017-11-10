@@ -74,6 +74,12 @@ class LabeledPropertyGraph:
         self._nodes = {}
         self._relationships = {}
 
+# TODO: Consider adding special methods to the LPG.
+
+    def __getitem__(self, key):
+        """Return _graphat key."""
+        return self._graph[key]
+
     def nodes(self):
         """Return a list of nodes in the graph."""
         return [node for node in self._nodes.keys()]
@@ -93,6 +99,7 @@ class LabeledPropertyGraph:
 
     def add_relationship(self, name, node_a, node_b, both_ways=False):
         """Refactored add_relationship for EAFP."""
+        # TODO: NEED LOGIC SO A NODE CANT HAVE A REL WITH ITSELF
         nodes = self.nodes()
         if node_a not in nodes or node_b not in nodes:
             raise KeyError('A node is not present in this graph')
@@ -133,21 +140,24 @@ class LabeledPropertyGraph:
         del self._relationships[name][node_a][node_b]
         try:
             self._graph[node_a][node_b].remove(name)
+            if len(self._graph[node_a][node_b]) < 2:
+                self._graph[node_a][node_b] = self._graph[node_a][node_b][0]
         except AttributeError:
             del self._graph[node_a][node_b]
 
     def remove_node(self, name):
         """Remove a node and all of its relationships."""
         for relationship in self._relationships:
+            for node in self._relationships[relationship]:
+                try:
+                    del self._relationships[relationship][node][name]
+                except KeyError:
+                    continue
             try:
                 del self._relationships[relationship][name]
             except KeyError:
                 continue
-            for node_a in relationship:
-                del self._relationship[node_a][name]
         del self._graph[name]
-        #  The following needs to be refactored, as it would be computationally
-        #  expensive to iterate over all of the nodes in a possibly huge graph.
         for node in self._graph:
             try:
                 del self._graph[node][name]
@@ -198,4 +208,3 @@ class LabeledPropertyGraph:
 
 
 # TODO: Traversals
-# TODO: Add an option make a relationship bi-directional betwen two nodes
