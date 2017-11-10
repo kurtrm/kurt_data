@@ -12,12 +12,18 @@ def lpg():
     return lpg
 
 
-# @pytest.fixture
-# def loaded_lpg():
-#     """Fixture of a loaded lpg."""
-#     from kurt_data.scripts.labeled_property_graph import LabeledPropertyGraph
-#     lpg = LabeledPropertyGraph()
-#     lpg
+@pytest.fixture
+def loaded_lpg():
+    """Fixture of a loaded lpg."""
+    from kurt_data.scripts.labeled_property_graph import LabeledPropertyGraph
+    lpg = LabeledPropertyGraph()
+    lpg.add_node('Charlie')
+    lpg.add_node('Unicorn')
+    lpg.add_node('Pegasus')
+    lpg.add_relationship('buddies', 'Charlie', 'Unicorn', both_ways=True)
+    lpg.add_relationship('cousins', 'Charlie', 'Unicorn')
+
+    return lpg
 
 # ==================== Nodes ======================
 
@@ -169,3 +175,27 @@ def test_coniditionals_in_add_rels(lpg):
     lpg.add_relationship('buddies', 'Charlie', 'Unicorn', both_ways=True)
     lpg.add_relationship('buddies', 'Charlie', 'Pegasus')
     assert lpg._graph['Charlie']['Pegasus'] == lpg._relationships['buddies']['Charlie']['Pegasus'].name
+
+
+def test_adding_another_rel_between_nodes(lpg):
+    """Ensure we except attribute error."""
+    lpg.add_node('Charlie')
+    lpg.add_node('Unicorn')
+    lpg.add_node('Pegasus')
+    lpg.add_relationship('buddies', 'Charlie', 'Unicorn', both_ways=True)
+    lpg.add_relationship('cousins', 'Charlie', 'Unicorn')
+    assert lpg._graph['Charlie']['Unicorn'][1] == lpg._relationships['cousins']['Charlie']['Unicorn'].name
+
+
+def test_removing_rel(loaded_lpg):
+    """Ensure relationships can be removed."""
+    loaded_lpg.remove_relationship('cousins', 'Charlie', 'Unicorn')
+    assert loaded_lpg._graph['Charlie']['Unicorn'] == 'buddies'
+
+
+def test_removing_rel_single(loaded_lpg):
+    """Ensure relationships can be removed."""
+    loaded_lpg.remove_relationship('cousins', 'Charlie', 'Unicorn')
+    loaded_lpg.remove_relationship('buddies', 'Charlie', 'Unicorn')
+    with pytest.raises(KeyError):
+        loaded_lpg._graph['Charlie']['Unicorn'] == []

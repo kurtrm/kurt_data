@@ -133,6 +133,8 @@ class LabeledPropertyGraph:
         del self._relationships[name][node_a][node_b]
         try:
             self._graph[node_a][node_b].remove(name)
+            if len(self._graph[node_a][node_b]) < 2:
+                self._graph[node_a][node_b] = self._graph[node_a][node_b][0]
         except AttributeError:
             del self._graph[node_a][node_b]
 
