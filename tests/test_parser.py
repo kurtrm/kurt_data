@@ -38,14 +38,14 @@ def pdf_docs_function(pdf_docs):
 @pytest.fixture
 def pdf_docs():
     """Fixture containing all bills."""
-    paths = ['/bills/' + bill for bill in os.listdir('/bills')]
+    paths = ['bills/' + bill for bill in os.listdir('bills/')]
     return paths
 
 
 @pytest.fixture
 def pdf_docs_text():
     """Fixturize the pickle of the pdf texts."""
-    bills = pickle.load(open('text_docs.p', 'rb'))
+    bills = pickle.load(open('tests/text_docs.p', 'rb'))
     return bills
 
 

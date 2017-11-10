@@ -1,3 +1,4 @@
+"""I didn't implement this. Taken from python-fitbit."""
 #!/usr/bin/env python
 import cherrypy
 import os

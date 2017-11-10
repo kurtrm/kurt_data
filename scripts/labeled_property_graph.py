@@ -85,65 +85,48 @@ class LabeledPropertyGraph:
 
     def add_node(self, name):
         """Add a node and pass the name to the node.name."""
-        if name not in self.nodes():
-            node = Node(name)
-            self._graph[name] = {}
-            self._nodes[name] = node
-        else:
+        if name in self.nodes():
             raise KeyError('Node already exists in graph')
+        node = Node(name)
+        self._graph[name] = {}
+        self._nodes[name] = node
 
-    # def add_relationship(self, name, node_a, node_b):  # EAFP: REFACTOR
-    #     """Add a relationship between two nodes."""
-    #     nodes = self.nodes()
-    #     if node_a in nodes and node_b in nodes:
-    #         relationship = Relationship(name)
-    #         if self._graph[node_a].get(name):
-    #             if isinstance(self._graph[node_a][name], list):
-    #                 self._graph[node_a][name].append(node_b)
-    #             else:
-    #                 current_relationship = self._graph[node_a][name]
-    #                 self._graph[node_a][name] = [current_relationship, node_b]
-    #         else:
-    #             self._graph[node_a][name] = node_b
-    #         if self._relationships.get(name):
-    #             if self._relationships[name].get(node_a):
-    #                 if self._relationships[name][node_a].get(node_b):
-    #                     raise ValueError('Relationship already exists'
-    #                                      'between nodes')
-    #                 else:
-    #                     self._relationships[name][node_a][node_b] = relationship
-    #             else:
-    #                 self._relationships[name][node_a] = {node_b: relationship}
-    #         else:
-    #             self._relationships[name] = {node_a: {node_b: relationship}}
-    #     else:
-    #         raise KeyError('Node not in graph')
-
-    def add_relationship(self, name, node_a, node_b):
+    def add_relationship(self, name, node_a, node_b, both_ways=False):
         """Refactored add_relationship for EAFP."""
         nodes = self.nodes()
         if node_a not in nodes or node_b not in nodes:
             raise KeyError('A node is not present in this graph')
-        try:
-            if self._relationships[name][node_a].get(node_b):
-                raise ValueError('Relationship already exists between nodes')
-            self._relationships[name][node_a][node_b] = Relationship(name)
-        except KeyError as key_tuple:
-            key = key_tuple.args[0]
-            if key == name:
-                self._relationships[name] = {node_a: {node_b: Relationship(name)}}
-            elif key == node_a:
-                self._relationships[name][node_a] = {node_b: Relationship(name)}
-            else:
-                # import pdb; pdb.set_trace()
-                self._relationships[name][node_a][node_b] = Relationship(name)
-        try:
-            self._graph[node_a][node_b].append(name)
-        except AttributeError:
-            curr_rel = self._graph[node_a][node_b]
-            self._graph[node_a][node_b] = [curr_rel, name]
-        except KeyError:
-            self._graph[node_a][node_b] = name
+
+        def add(rel, a, b):
+            """Local function to perform operation."""
+            try:
+                if self._relationships[rel][a].get(b):
+                    raise ValueError('{} -> {} relationship'
+                                     'already exists'.format(a, b))
+                self._relationships[rel][a][b] = Relationship(rel)
+            except KeyError as key_errors:
+                key = key_errors.args[0]
+                if key == rel:
+                    self._relationships[rel] = {
+                        a: {
+                            b: Relationship(rel)
+                        }
+                    }
+                elif key == a:
+                    self._relationships[rel][a] = {
+                        b: Relationship(rel)
+                    }
+            try:
+                self._graph[a][b].append(rel)
+            except AttributeError:
+                curr_rel = self._graph[a][b]
+                self._graph[a][b] = [curr_rel, rel]
+            except KeyError:
+                self._graph[a][b] = rel
+
+        add(name, node_a, node_b)
+        if both_ways:
+            add(name, node_b, node_a)
 
     def remove_relationship(self, name, node_a, node_b):
         """Remove a relationship between two nodes."""
@@ -155,7 +138,6 @@ class LabeledPropertyGraph:
 
     def remove_node(self, name):
         """Remove a node and all of its relationships."""
-        self._nodes.remove(name)
         for relationship in self._relationships:
             try:
                 del self._relationships[relationship][name]
@@ -205,6 +187,14 @@ class LabeledPropertyGraph:
             return relationship in self._graph[node_a][node_b] \
                 and relationship in self._graph[node_b][node_a]
         return relationship in self._graph[node_a][node_b]
+
+    def change_node_property(self, property_, node):
+        """Change the property of a node."""
+        pass
+
+    def change_relationship_property(self, property_, node):
+        """Change the property of a relationship."""
+        pass
 
 
 # TODO: Traversals
