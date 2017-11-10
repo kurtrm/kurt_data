@@ -85,12 +85,11 @@ class LabeledPropertyGraph:
 
     def add_node(self, name):
         """Add a node and pass the name to the node.name."""
-        if name not in self.nodes():
-            node = Node(name)
-            self._graph[name] = {}
-            self._nodes[name] = node
-        else:
+        if name in self.nodes():
             raise KeyError('Node already exists in graph')
+        node = Node(name)
+        self._graph[name] = {}
+        self._nodes[name] = node
 
     def add_relationship(self, name, node_a, node_b, both_ways=False):
         """Refactored add_relationship for EAFP."""
@@ -117,8 +116,6 @@ class LabeledPropertyGraph:
                     self._relationships[rel][a] = {
                         b: Relationship(rel)
                     }
-                else:
-                    self._relationships[rel][a][b] = Relationship(rel)
             try:
                 self._graph[a][b].append(rel)
             except AttributeError:
