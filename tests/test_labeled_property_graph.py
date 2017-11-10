@@ -234,3 +234,17 @@ def test_nodes_with_relationships(loaded_lpg):
     """Ensure returns correction relationships."""
     assert loaded_lpg.nodes_with_relationship('buddies') == \
         list(loaded_lpg._relationships['buddies'].keys())
+
+
+def test_get_neighbors(loaded_lpg):
+    """Ensure returns keys of _graph."""
+    loaded_lpg.add_node('Willy')
+    loaded_lpg.add_node('Billy')
+    loaded_lpg.add_node('Gilly')
+    loaded_lpg.add_node('Lilly')
+    for node in loaded_lpg._graph:
+        if node == 'Billy':
+            continue
+        loaded_lpg.add_relationship('acquaintances', 'Billy', node)
+    assert loaded_lpg.nodes_with_relationship('acquaintances') == \
+        list(loaded_lpg._relationships['acquaintances'].keys())

@@ -8,5 +8,6 @@ omit =
     scripts/parser_troubleshooting.py
     scripts/eafp_refactor.py
     scripts/tmobile_bill_parser.py
+    scripts/lpg_cli.py
 [report]
 show_missing = False
