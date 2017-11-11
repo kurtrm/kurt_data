@@ -95,6 +95,29 @@ def test_removing_nodes_with_many_connections(loaded_lpg):
         assert 'Wendy' not in loaded_lpg._relationships[rel]
 
 
+def test_get_neighbors(loaded_lpg):
+    """Test get_neighbors method."""
+    loaded_lpg.add_node('Wendy')
+    loaded_lpg.add_node('Teddy')
+    for node in loaded_lpg.nodes():
+        if node != 'Wendy':
+            loaded_lpg.add_relationship('buddy', 'Wendy', node)
+    assert loaded_lpg.get_neighbors('Wendy') == list(loaded_lpg._graph['Wendy']
+                                                     .keys())
+
+
+def test_is_neighbors_to(loaded_lpg):
+    """Test returns correct neighbors."""
+    loaded_lpg.add_node('Wendy')
+    loaded_lpg.add_node('Teddy')
+    for node in loaded_lpg.nodes():
+        if node != 'Wendy':
+            loaded_lpg.add_relationship('buddy', node, 'Wendy')
+    assert sorted(loaded_lpg.is_neighbor_to('Wendy')) == sorted(['Teddy',
+                                                                 'Pegasus',
+                                                                'Charlie',
+                                                                 'Unicorn'])
+
 # ================== Relationsihps ================
 
 
@@ -236,7 +259,7 @@ def test_nodes_with_relationships(loaded_lpg):
         list(loaded_lpg._relationships['buddies'].keys())
 
 
-def test_get_neighbors(loaded_lpg):
+def test_nodes_with_relationships_2(loaded_lpg):
     """Ensure returns keys of _graph."""
     loaded_lpg.add_node('Willy')
     loaded_lpg.add_node('Billy')
