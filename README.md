@@ -15,23 +15,23 @@ I also realized that this is a perfect candidate source to both visualize and st
 
 My goals are to:
 
-    [x] Parse each bill to retrieve the data. (Still requires testing.)
-    [x] Plug the data into a DataFrame.
-    [x] Analyze which columns need to be discarded and which are useful.
-    [ ] Research existing graph implementations and databases.
-    [ ] Learn how to implement the data into existing libraries and databases.
-    [ ] Determine how to weight each vertex or edge.
-    [ ] Determine perspectives on the data and how to present each layer.
+- [x] Parse each bill to retrieve the data. (Still requires testing.)
+- [x] Plug the data into a DataFrame.
+- [x] Analyze which columns need to be discarded and which are useful.
+- [ ] Research existing graph implementations and databases.
+- [ ] Learn how to implement the data into existing libraries and databases.
+- [ ] Determine how to weight each vertex or edge.
+- [ ] Determine perspectives on the data and how to present each layer.
 
 To do:
 
-    - Refactor all code for EAFP paradigm.
-    - Refactor tables as described in notebook.
-    - Refactor current weighted graph implementation.
-    - Write tests for PDF parser and weighted graph above.
-    - Put it into an existing graph database.
-    - Make various visualizations using Matplotlib (See notebook for more information.)
-    - Rather than using a Python scheduler, write a Cron job for scheduling Fitbit pulls.
+- Refactor all code for EAFP paradigm.
+- Refactor tables as described in notebook.
+- Refactor current weighted graph implementation.
+- Write tests for PDF parser and weighted graph above.
+- Put it into an existing graph database.
+- Make various visualizations using Matplotlib (See notebook for more information.)
+- Rather than using a Python scheduler, write a Cron job for scheduling Fitbit pulls.
 
 ## Google Maps Location History
 
