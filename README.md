@@ -28,10 +28,8 @@ To do:
 - Refactor all code for EAFP paradigm.
 - Refactor tables as described in notebook.
 - Refactor current weighted graph implementation.
-- Write tests for PDF parser and weighted graph above.
 - Put it into an existing graph database.
 - Make various visualizations using Matplotlib (See notebook for more information.)
-- Rather than using a Python scheduler, write a Cron job for scheduling Fitbit pulls.
 
 ## Google Maps Location History
 
