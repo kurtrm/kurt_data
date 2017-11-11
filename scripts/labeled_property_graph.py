@@ -115,9 +115,7 @@ class LabeledPropertyGraph:
                 key = key_errors.args[0]
                 if key == rel:
                     self._relationships[rel] = {
-                        a: {
-                            b: Relationship(rel)
-                        }
+                        a: {b: Relationship(rel)}
                     }
                 elif key == a:
                     self._relationships[rel][a] = {
@@ -175,6 +173,11 @@ class LabeledPropertyGraph:
     def get_neighbors(self, node):
         """Return all nodes node has relationships with."""
         return list(self._graph[node].keys())
+
+    def is_neighbor_to(self, node):
+        """Return node that node is a neighbor to, but not vice versa."""
+        return [vertex for vertex, rels in self._graph.items()
+                if node in rels]
 
     def get_relationship_properties(self, name, node_a, node_b):
         """Return properties of a relationship between two nodes."""
