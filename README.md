@@ -25,6 +25,10 @@ My goals are to:
 
 To do:
 
+- Define __repr__ for relationship and node classes.
+- Determine useful attributes that can be placed on these nodes besides their properties.
+- Consider dividing up the LPG class into several classes. It has many methods and is made of several dictionaries.
+- Implement a CLI 
 - Refactor all code for EAFP paradigm.
 - Refactor tables as described in notebook.
 - Refactor current weighted graph implementation.

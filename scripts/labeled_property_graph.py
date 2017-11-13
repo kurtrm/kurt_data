@@ -35,6 +35,13 @@ class Node:
             raise KeyError("Node does not contain that property")
         del self.properties[property_]
 
+    def __repr__(self):
+        """Show the properties of the node."""
+        props = "Name: {}\nProperties:".format(self.name)
+        for key, value in self.properties.items():
+            props += '\r{}: {}'.format(key, value)
+        return props
+
 
 class Relationship:
     """Relationship object that will be able to have properties as well."""
@@ -64,6 +71,13 @@ class Relationship:
             raise KeyError("Node does not contain that property")
         del self.properties[property_]
 
+    def __repr__(self):
+        """Show the properties of the node."""
+        props = "Name: {}\nProperties:".format(self.name)
+        for key, value in self.properties.items():
+            props += '\r{}: {}'.format(key, value)
+        return props
+
 
 class LabeledPropertyGraph:
     """Define a labeled property graph as dictionary composition."""
@@ -76,7 +90,7 @@ class LabeledPropertyGraph:
 
 # TODO: Consider adding special methods to the LPG.
 
-    def __getitem__(self, key):
+    def __getitem__(self, key, type=None):
         """Return _graphat key."""
         return self._graph[key]
 
@@ -201,13 +215,14 @@ class LabeledPropertyGraph:
                 and relationship in self._graph[node_b][node_a]
         return relationship in self._graph[node_a][node_b]
 
-    def change_node_property(self, property_, node):
+    def change_node_property(self, property_, value, node):
         """Change the property of a node."""
-        pass
+        self._nodes[node].properties[property_] = value
 
-    def change_relationship_property(self, property_, node):
+    def change_relationship_property(self, rel, node_a, node_b, prop, val):
         """Change the property of a relationship."""
-        pass
+        self._relationships[rel][node_a][node_b].properties[prop] = val
+
 
 
 # TODO: Traversals
