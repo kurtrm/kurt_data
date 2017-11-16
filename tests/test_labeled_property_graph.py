@@ -286,19 +286,19 @@ def test_change_rel_properties(loaded_lpg):
     assert loaded_lpg._relationships['buddies']['Charlie']['Unicorn'].properties['since'] == 1990
 
 
-def test_rm_change_properties(loaded_lpg):
+def test_rm_rel_properties(loaded_lpg):
     """Test that we can add node properties."""
     loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
     assert loaded_lpg._relationships['buddies']['Charlie']['Unicorn'].properties['since'] == 1985
     loaded_lpg.remove_rel_prop('buddies', 'Charlie', 'Unicorn', 'since')
-    assert loaded_lpg._relationships['buddies']['Charlie']['Unicorn'].properties['since'] == 1990
+    assert not loaded_lpg._relationships['buddies']['Charlie']['Unicorn'].properties['since']
 
 
-def test_error_when_adding_duplicates(loaded_lpg):
+def test_error_when_adding_rel_prop_duplicates(loaded_lpg):
     """Test that we raise the appropriate error."""
-    loaded_lpg.add_node_props('Charlie', kidneys=1)
+    loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
     with pytest.raises(KeyError):
-        loaded_lpg.add_node_props('Charlie', kidneys=1)
+        loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
 
 # ================ RETRIEVAL =============================
 
