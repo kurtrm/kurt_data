@@ -22,7 +22,7 @@ class Node:
     def change_property(self, property_, value):
         """Method to alter a value on a property."""
         if property_ not in self.properties:
-            raise KeyError("Property does not exist, use add_property()"
+            raise AttributeError("Property does not exist, use add_property()"
                            "to add a property")
         self.properties[property_] = value
 
@@ -58,8 +58,8 @@ class Relationship:
     def change_property(self, property_, value):
         """Method to alter a value on a property."""
         if property_ not in self.properties:
-            raise KeyError("Property does not exist, use add_property()"
-                           "to add a property")
+            raise AttributeError("Property does not exist, use add_property()"
+                                 "to add a property")
         self.properties[property_] = value
 
     def remove_property(self, property_):
