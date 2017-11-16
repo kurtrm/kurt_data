@@ -291,7 +291,7 @@ def test_rm_rel_properties(loaded_lpg):
     loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
     assert loaded_lpg._relationships['buddies']['Charlie']['Unicorn'].properties['since'] == 1985
     loaded_lpg.remove_rel_prop('buddies', 'Charlie', 'Unicorn', 'since')
-    assert not loaded_lpg._relationships['buddies']['Charlie']['Unicorn'].properties['since']
+    assert not loaded_lpg._relationships['buddies']['Charlie']['Unicorn'].properties.get('since')
 
 
 def test_error_when_adding_rel_prop_duplicates(loaded_lpg):
