@@ -118,6 +118,29 @@ def test_is_neighbors_to(loaded_lpg):
                                                                 'Charlie',
                                                                  'Unicorn'])
 
+
+def test_add_node_properties(loaded_lpg):
+    """Test that we can add node properties."""
+    loaded_lpg.add_node_prop('Charlie', 'kidneys', 1)
+    assert loaded_lpg._nodes['Charlie'].properties['kidneys'] == 1
+
+
+def test_change_node_properties(loaded_lpg):
+    """Test that we can add node properties."""
+    loaded_lpg.add_node_prop('Charlie', 'kidneys', 1)
+    assert loaded_lpg._nodes['Charlie'].properties['kidneys'] == 1
+    loaded_lpg.change_node_prop('Charlie', 'kidneys', 0)
+    assert loaded_lpg._nodes['Charlie'].properties['kidneys'] == 0
+
+
+def test_rm_node_properties(loaded_lpg):
+    """Test that we can add node properties."""
+    loaded_lpg.add_node_prop('Charlie', 'kidneys', 1)
+    assert loaded_lpg._nodes['Charlie'].properties['kidneys'] == 1
+    loaded_lpg.remove_node_prop('Charlie', 'kidneys')
+    assert not loaded_lpg._nodes['Charlie'].properties.get('kidneys')
+
+
 # ================== Relationsihps ================
 
 
