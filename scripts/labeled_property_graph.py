@@ -23,13 +23,13 @@ class Node:
         """Method to alter a value on a property."""
         if property_ not in self.properties:
             raise AttributeError("Property does not exist, use add_property()"
-                           "to add a property")
+                                 "to add a property")
         self.properties[property_] = value
 
     def remove_property(self, property_):
         """Method to remove a property from a node."""
         if property_ not in self.properties:
-            raise KeyError("Node does not contain that property")
+            raise AttributeError("Node does not contain that property")
         del self.properties[property_]
 
     def __repr__(self):
@@ -65,7 +65,7 @@ class Relationship:
     def remove_property(self, property_):
         """Method to remove a property from a node."""
         if property_ not in self.properties:
-            raise KeyError("Node does not contain that property")
+            raise AttributeError("Node does not contain that property")
         del self.properties[property_]
 
     def __repr__(self):

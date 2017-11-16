@@ -172,11 +172,18 @@ def test_error_when_adding_duplicates(loaded_lpg):
         loaded_lpg.add_node_props('Charlie', kidneys=1)
 
 
-def test_change_prop_DNE(loaded_lpg):
+def test_change_node_prop_DNE(loaded_lpg):
     """Test that we get error if we try to change a property that DNE."""
     loaded_lpg.add_node_props('Charlie', kidneys=1)
     with pytest.raises(AttributeError):
         loaded_lpg.change_node_prop('Charlie', 'horn', 1)
+
+
+def test_remove_node_DNE_prop(loaded_lpg):
+    """Test that we raise an error if removing DNE prop."""
+    loaded_lpg.add_node_props('Charlie', kidneys=1)
+    with pytest.raises(AttributeError):
+        loaded_lpg.remove_node_prop('Charlie', 'kids')
 
 # ================== Relationsihps ================
 
@@ -338,7 +345,15 @@ def test_change_rel_prop_DNE(loaded_lpg):
     with pytest.raises(AttributeError):
         loaded_lpg.change_rel_prop('buddies', 'Charlie', 'Unicorn', 'butt', 1)
 
-# ================ RETRIEVAL =============================
+
+def test_remove_rel_DNE_prop(loaded_lpg):
+    """Test that we raise an error if removing DNE prop."""
+    loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
+    with pytest.raises(AttributeError):
+        loaded_lpg.remove_rel_prop('buddies', 'Charlie', 'Unicorn', 'butt')
+
+
+# ====================== RETRIEVAL =============================
 
 
 def test_get_relationships(loaded_lpg):
