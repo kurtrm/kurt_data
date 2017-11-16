@@ -215,7 +215,7 @@ class LabeledPropertyGraph:
                 and relationship in self._graph[node_b][node_a]
         return relationship in self._graph[node_a][node_b]
 
-    def change_node_prop(self, property_, value, node):
+    def change_node_prop(self, node, property_, value):
         """Change the property of a node."""
         self._nodes[node].change_property(property_, value)
 
@@ -231,7 +231,23 @@ class LabeledPropertyGraph:
         """Remove rel property."""
         self._relationships[rel][node_a][node_b].remove_property(prop)
 
+    def add_node_prop(self, node, property_, val):
+        """Add a node property with its value."""
+        self._nodes[node].add_property(property_, val)
 
+    def add_rel_prop(self, rel, node_a, node_b, prop, val):
+        """Add a relationship prop with its value."""
+        self._relationships[rel][node_a][node_b].add_property(prop, val)
+
+    def add_node_props():
+        """Add multiple props."""
+        pass
+
+    def add_rel_props():
+        """Add multiple props."""
+        pass
+
+    # Consider making these kwarsg for the methods already implemented.
 
 
 # TODO: Traversals
