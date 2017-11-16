@@ -33,12 +33,21 @@ def big_lpg():
     from kurt_data.scripts.labeled_property_graph import LabeledPropertyGraph
     lpg = LabeledPropertyGraph()
     faker = Faker()
-    phone_nums = [faker.phone_number() for _ in range(100)]
-    relations = [faker.words() for _ in range(100)]
+    phone_nums = list(set([faker.phone_number() for _ in range(100)]))
+    relations = list(set([faker.word() for _ in range(100)]))
     for number in phone_nums:
         lpg.add_node(number)
+    for _ in range(250):
+        name_a = random.choice(phone_nums)
+        name_b = random.choice(phone_nums)
+        relationship = random.choice(relations)
+        both_ways = bool(random.getrandbits(1))
+        try:
+            lpg.add_relationship(relationship, name_a, name_b, both_ways)
+        except ValueError:
+            continue
 
-        lpg.add_relationship(name, node_a, node_b)
+    return lpg
 
 # ==================== Nodes ======================
 
