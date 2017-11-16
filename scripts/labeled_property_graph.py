@@ -1,9 +1,6 @@
 """
 Implementation of a labeled property graph.
 
-Note that classes are fine to be keys in a dictionary, so the
-graph itself is going to be a dictionary with Node class objects
-as keys.
 """
 
 

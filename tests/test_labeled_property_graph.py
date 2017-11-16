@@ -2,6 +2,7 @@
 
 from faker import Faker
 import pytest
+import random
 
 
 @pytest.fixture
@@ -24,6 +25,20 @@ def loaded_lpg():
     lpg.add_relationship('cousins', 'Charlie', 'Unicorn')
 
     return lpg
+
+
+@pytest.fixture
+def big_lpg():
+    """Lpg that's big and nasty."""
+    from kurt_data.scripts.labeled_property_graph import LabeledPropertyGraph
+    lpg = LabeledPropertyGraph()
+    faker = Faker()
+    phone_nums = [faker.phone_number() for _ in range(100)]
+    relations = [faker.words() for _ in range(100)]
+    for number in phone_nums:
+        lpg.add_node(number)
+
+        lpg.add_relationship(name, node_a, node_b)
 
 # ==================== Nodes ======================
 
