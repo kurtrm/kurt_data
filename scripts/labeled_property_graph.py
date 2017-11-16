@@ -240,8 +240,4 @@ class LabeledPropertyGraph:
         for key, value in kwargs.items():
             self._relationships[rel][node_a][node_b].add_property(key, value)
 
-
-    # Consider making these kwarsg for the methods already implemented.
-
-
 # TODO: Traversals
