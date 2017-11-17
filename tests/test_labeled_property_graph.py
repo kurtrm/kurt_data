@@ -185,6 +185,13 @@ def test_remove_node_DNE_prop(loaded_lpg):
     with pytest.raises(AttributeError):
         loaded_lpg.remove_node_prop('Charlie', 'kids')
 
+
+def test_node_repr(loaded_lpg):
+    """Test that we get the expected string when 'calling' the class."""
+    loaded_lpg.add_node_props('Charlie', kidneys=1)
+#    import pdb; pdb.set_trace()
+    assert repr(loaded_lpg._nodes['Charlie']) == "Name: Charlie\nProperties:\rkidneys: 1"
+
 # ================== Relationsihps ================
 
 

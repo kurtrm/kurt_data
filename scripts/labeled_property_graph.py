@@ -35,6 +35,7 @@ class Node:
     def __repr__(self):
         """Show the properties of the node."""
         props = "Name: {}\nProperties:".format(self.name)
+#        import pdb; pdb.set_trace()
         for key, value in self.properties.items():
             props += '\r{}: {}'.format(key, value)
         return props
