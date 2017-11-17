@@ -207,7 +207,10 @@ def test_has_neighbor_false(loaded_lpg):
     """Test has neighbor method false."""
     assert not loaded_lpg.has_neighbor('Charlie', 'Pegasus')
 
-    
+def test_has_neighbor_exception(loaded_lpg):
+    """Test exception is raised if node not there."""
+    with pytest.raises(KeyError):
+        loaded_lpg.has_neighbor('Cheeky', 'Charlie')
 
 # ================== Relationsihps ================
 
