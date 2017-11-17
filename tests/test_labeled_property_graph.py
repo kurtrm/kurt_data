@@ -363,10 +363,13 @@ def test_remove_rel_DNE_prop(loaded_lpg):
 def test_rel_repr(loaded_lpg):
     """Test that we get the expected string when 'calling' the class."""
     loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
-#    import pdb; pdb.set_trace()
     assert repr(loaded_lpg._relationships['buddies']['Charlie']['Unicorn']) == "Name: buddies\nProperties:\rsince: 1985"
 
 
+def test_adding_self_ref_rel(loaded_lpg):
+    """Test that we get an error when trying to add a rel b/w node and self."""
+    with pytest.raises(ValueError):
+        loaded_lpg.add_rel_props('buddies', 'Charlie', 'Charlie', since='birth')
 
 # ====================== RETRIEVAL =============================
 

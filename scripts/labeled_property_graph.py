@@ -86,11 +86,13 @@ class LabeledPropertyGraph:
         self._nodes = {}
         self._relationships = {}
 
+# =====================================================
 # TODO: Consider adding special methods to the LPG.
 
-    def __getitem__(self, key, type=None):
-        """Return _graphat key."""
-        return self._graph[key]
+#    def __getitem__(self, key, type=None):
+#        """Return _graphat key."""
+#        return self._graph[key]
+# =====================================================
 
     def nodes(self):
         """Return a list of nodes in the graph."""
@@ -112,8 +114,6 @@ class LabeledPropertyGraph:
     def add_relationship(self, name, node_a, node_b, both_ways=False):
         """Refactored add_relationship for EAFP."""
         # TODO: NEED LOGIC SO A NODE CANT HAVE A REL WITH ITSELF
-        if node_a == node_b:
-            raise ValueError("Node should not have a relationship with itself.")
         nodes = self.nodes()
         if node_a not in nodes or node_b not in nodes:
             raise KeyError('A node is not present in this graph')
@@ -238,6 +238,8 @@ class LabeledPropertyGraph:
 
     def add_rel_props(self, rel, node_a, node_b, **kwargs):
         """Add relationship props with values."""
+        if node_a == node_b:
+            raise ValueError("Node should not have a relationship with itself.")
         for key, value in kwargs.items():
             self._relationships[rel][node_a][node_b].add_property(key, value)
 
