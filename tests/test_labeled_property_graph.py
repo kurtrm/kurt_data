@@ -196,6 +196,17 @@ def test_get_node_props(loaded_lpg):
     """Test getting node properties."""
     loaded_lpg.add_node_props('Charlie', kidneys=1)
     assert loaded_lpg.get_node_properties('Charlie') == {'kidneys': 1}
+
+
+def test_has_neighbor_true(loaded_lpg):
+    """Test has_neighbor method."""
+    assert loaded_lpg.has_neighbor('Charlie', 'Unicorn')
+
+
+def test_has_neighbor_false(loaded_lpg):
+    """Test has neighbor method false."""
+    assert not loaded_lpg.has_neighbor('Charlie', 'Pegasus')
+
     
 
 # ================== Relationsihps ================
