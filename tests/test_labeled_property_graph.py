@@ -189,8 +189,14 @@ def test_remove_node_DNE_prop(loaded_lpg):
 def test_node_repr(loaded_lpg):
     """Test that we get the expected string when 'calling' the class."""
     loaded_lpg.add_node_props('Charlie', kidneys=1)
-#    import pdb; pdb.set_trace()
     assert repr(loaded_lpg._nodes['Charlie']) == "Name: Charlie\nProperties:\rkidneys: 1"
+
+
+def test_get_node_props(loaded_lpg):
+    """Test getting node properties."""
+    loaded_lpg.add_node_props('Charlie', kidneys=1)
+    assert loaded_lpg.get_node_properties('Charlie') == {'kidneys': 1}
+    
 
 # ================== Relationsihps ================
 

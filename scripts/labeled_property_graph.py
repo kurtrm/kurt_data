@@ -199,7 +199,7 @@ class LabeledPropertyGraph:
 
     def get_node_properties(self, name):
         """Return properties of a node."""
-        return list(self._nodes[name].properties.keys())
+        return self._nodes[name].properties
 
     def has_neighbor(self, node_a, node_b):
         """Return boolean whether a node has a certain neighbor."""
