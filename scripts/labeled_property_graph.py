@@ -1,9 +1,6 @@
 """
 Implementation of a labeled property graph.
 
-Note that classes are fine to be keys in a dictionary, so the
-graph itself is going to be a dictionary with Node class objects
-as keys.
 """
 
 
@@ -25,19 +22,20 @@ class Node:
     def change_property(self, property_, value):
         """Method to alter a value on a property."""
         if property_ not in self.properties:
-            raise KeyError("Property does not exist, use add_property()"
-                           "to add a property")
+            raise AttributeError("Property does not exist, use add_property()"
+                                 "to add a property")
         self.properties[property_] = value
 
     def remove_property(self, property_):
         """Method to remove a property from a node."""
         if property_ not in self.properties:
-            raise KeyError("Node does not contain that property")
+            raise AttributeError("Node does not contain that property")
         del self.properties[property_]
 
     def __repr__(self):
         """Show the properties of the node."""
         props = "Name: {}\nProperties:".format(self.name)
+#        import pdb; pdb.set_trace()
         for key, value in self.properties.items():
             props += '\r{}: {}'.format(key, value)
         return props
@@ -61,14 +59,14 @@ class Relationship:
     def change_property(self, property_, value):
         """Method to alter a value on a property."""
         if property_ not in self.properties:
-            raise KeyError("Property does not exist, use add_property()"
-                           "to add a property")
+            raise AttributeError("Property does not exist, use add_property()"
+                                 "to add a property")
         self.properties[property_] = value
 
     def remove_property(self, property_):
         """Method to remove a property from a node."""
         if property_ not in self.properties:
-            raise KeyError("Node does not contain that property")
+            raise AttributeError("Node does not contain that property")
         del self.properties[property_]
 
     def __repr__(self):
@@ -88,11 +86,13 @@ class LabeledPropertyGraph:
         self._nodes = {}
         self._relationships = {}
 
+# =====================================================
 # TODO: Consider adding special methods to the LPG.
 
-    def __getitem__(self, key, type=None):
-        """Return _graphat key."""
-        return self._graph[key]
+#    def __getitem__(self, key, type=None):
+#        """Return _graphat key."""
+#        return self._graph[key]
+# =====================================================
 
     def nodes(self):
         """Return a list of nodes in the graph."""
@@ -195,11 +195,11 @@ class LabeledPropertyGraph:
 
     def get_relationship_properties(self, name, node_a, node_b):
         """Return properties of a relationship between two nodes."""
-        return self._relationship[name][node_a][node_b].properties()
+        return self._relationships[name][node_a][node_b].properties
 
     def get_node_properties(self, name):
         """Return properties of a node."""
-        return list(self._nodes[name].properties.keys())
+        return self._nodes[name].properties
 
     def has_neighbor(self, node_a, node_b):
         """Return boolean whether a node has a certain neighbor."""
@@ -227,27 +227,20 @@ class LabeledPropertyGraph:
         """Remove node property."""
         self._nodes[node].remove_property(property_)
 
-    def remove_rel_prop(self, rel, node_a, node_b, prop,):
+    def remove_rel_prop(self, rel, node_a, node_b, prop):
         """Remove rel property."""
         self._relationships[rel][node_a][node_b].remove_property(prop)
 
-    def add_node_prop(self, node, property_, val):
-        """Add a node property with its value."""
-        self._nodes[node].add_property(property_, val)
+    def add_node_props(self, node, **kwargs):
+        """Add properties to a node with values."""
+        for key, value in kwargs.items():
+            self._nodes[node].add_property(key, value)
 
-    def add_rel_prop(self, rel, node_a, node_b, prop, val):
-        """Add a relationship prop with its value."""
-        self._relationships[rel][node_a][node_b].add_property(prop, val)
-
-    def add_node_props():
-        """Add multiple props."""
-        pass
-
-    def add_rel_props():
-        """Add multiple props."""
-        pass
-
-    # Consider making these kwarsg for the methods already implemented.
-
+    def add_rel_props(self, rel, node_a, node_b, **kwargs):
+        """Add relationship props with values."""
+        if node_a == node_b:
+            raise ValueError("Node should not have a relationship with itself.")
+        for key, value in kwargs.items():
+            self._relationships[rel][node_a][node_b].add_property(key, value)
 
 # TODO: Traversals

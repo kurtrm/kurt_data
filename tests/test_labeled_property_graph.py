@@ -2,6 +2,7 @@
 
 from faker import Faker
 import pytest
+import random
 
 
 @pytest.fixture
@@ -22,6 +23,29 @@ def loaded_lpg():
     lpg.add_node('Pegasus')
     lpg.add_relationship('buddies', 'Charlie', 'Unicorn', both_ways=True)
     lpg.add_relationship('cousins', 'Charlie', 'Unicorn')
+
+    return lpg
+
+
+@pytest.fixture
+def big_lpg():
+    """Lpg that's big and nasty."""
+    from kurt_data.scripts.labeled_property_graph import LabeledPropertyGraph
+    lpg = LabeledPropertyGraph()
+    faker = Faker()
+    phone_nums = list(set([faker.phone_number() for _ in range(100)]))
+    relations = list(set([faker.word() for _ in range(100)]))
+    for number in phone_nums:
+        lpg.add_node(number)
+    for _ in range(250):
+        name_a = random.choice(phone_nums)
+        name_b = random.choice(phone_nums)
+        relationship = random.choice(relations)
+        both_ways = bool(random.getrandbits(1))
+        try:
+            lpg.add_relationship(relationship, name_a, name_b, both_ways)
+        except ValueError:
+            continue
 
     return lpg
 
@@ -121,13 +145,13 @@ def test_is_neighbors_to(loaded_lpg):
 
 def test_add_node_properties(loaded_lpg):
     """Test that we can add node properties."""
-    loaded_lpg.add_node_prop('Charlie', 'kidneys', 1)
+    loaded_lpg.add_node_props('Charlie', kidneys=1)
     assert loaded_lpg._nodes['Charlie'].properties['kidneys'] == 1
 
 
 def test_change_node_properties(loaded_lpg):
     """Test that we can add node properties."""
-    loaded_lpg.add_node_prop('Charlie', 'kidneys', 1)
+    loaded_lpg.add_node_props('Charlie', kidneys=1)
     assert loaded_lpg._nodes['Charlie'].properties['kidneys'] == 1
     loaded_lpg.change_node_prop('Charlie', 'kidneys', 0)
     assert loaded_lpg._nodes['Charlie'].properties['kidneys'] == 0
@@ -135,11 +159,58 @@ def test_change_node_properties(loaded_lpg):
 
 def test_rm_node_properties(loaded_lpg):
     """Test that we can add node properties."""
-    loaded_lpg.add_node_prop('Charlie', 'kidneys', 1)
+    loaded_lpg.add_node_props('Charlie', kidneys=1)
     assert loaded_lpg._nodes['Charlie'].properties['kidneys'] == 1
     loaded_lpg.remove_node_prop('Charlie', 'kidneys')
     assert not loaded_lpg._nodes['Charlie'].properties.get('kidneys')
 
+
+def test_error_when_adding_duplicates(loaded_lpg):
+    """Test that we raise the appropriate error."""
+    loaded_lpg.add_node_props('Charlie', kidneys=1)
+    with pytest.raises(KeyError):
+        loaded_lpg.add_node_props('Charlie', kidneys=1)
+
+
+def test_change_node_prop_DNE(loaded_lpg):
+    """Test that we get error if we try to change a property that DNE."""
+    loaded_lpg.add_node_props('Charlie', kidneys=1)
+    with pytest.raises(AttributeError):
+        loaded_lpg.change_node_prop('Charlie', 'horn', 1)
+
+
+def test_remove_node_DNE_prop(loaded_lpg):
+    """Test that we raise an error if removing DNE prop."""
+    loaded_lpg.add_node_props('Charlie', kidneys=1)
+    with pytest.raises(AttributeError):
+        loaded_lpg.remove_node_prop('Charlie', 'kids')
+
+
+def test_node_repr(loaded_lpg):
+    """Test that we get the expected string when 'calling' the class."""
+    loaded_lpg.add_node_props('Charlie', kidneys=1)
+    assert repr(loaded_lpg._nodes['Charlie']) == "Name: Charlie\nProperties:\rkidneys: 1"
+
+
+def test_get_node_props(loaded_lpg):
+    """Test getting node properties."""
+    loaded_lpg.add_node_props('Charlie', kidneys=1)
+    assert loaded_lpg.get_node_properties('Charlie') == {'kidneys': 1}
+
+
+def test_has_neighbor_true(loaded_lpg):
+    """Test has_neighbor method."""
+    assert loaded_lpg.has_neighbor('Charlie', 'Unicorn')
+
+
+def test_has_neighbor_false(loaded_lpg):
+    """Test has neighbor method false."""
+    assert not loaded_lpg.has_neighbor('Charlie', 'Pegasus')
+
+def test_has_neighbor_exception(loaded_lpg):
+    """Test exception is raised if node not there."""
+    with pytest.raises(KeyError):
+        loaded_lpg.has_neighbor('Cheeky', 'Charlie')
 
 # ================== Relationsihps ================
 
@@ -265,7 +336,69 @@ def test_removing_rel_single(loaded_lpg):
     with pytest.raises(KeyError):
         loaded_lpg._graph['Charlie']['Unicorn'] == []
 
-# ================ RETRIEVAL =============================
+
+def test_add_rel_properties(loaded_lpg):
+    """Test that we can add node properties."""
+    loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
+    assert loaded_lpg._relationships['buddies']['Charlie']['Unicorn'].properties['since'] == 1985
+
+
+def test_change_rel_properties(loaded_lpg):
+    """Test that we can add node properties."""
+    loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
+    assert loaded_lpg._relationships['buddies']['Charlie']['Unicorn'].properties['since'] == 1985
+    loaded_lpg.change_rel_prop('buddies', 'Charlie', 'Unicorn', 'since', 1990)
+    assert loaded_lpg._relationships['buddies']['Charlie']['Unicorn'].properties['since'] == 1990
+
+
+def test_rm_rel_properties(loaded_lpg):
+    """Test that we can add node properties."""
+    loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
+    assert loaded_lpg._relationships['buddies']['Charlie']['Unicorn'].properties['since'] == 1985
+    loaded_lpg.remove_rel_prop('buddies', 'Charlie', 'Unicorn', 'since')
+    assert not loaded_lpg._relationships['buddies']['Charlie']['Unicorn'].properties.get('since')
+
+
+def test_error_when_adding_rel_prop_duplicates(loaded_lpg):
+    """Test that we raise the appropriate error."""
+    loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
+    with pytest.raises(KeyError):
+        loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
+
+
+def test_change_rel_prop_DNE(loaded_lpg):
+    """Test that we get error if we try to change a property that DNE."""
+    loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
+    with pytest.raises(AttributeError):
+        loaded_lpg.change_rel_prop('buddies', 'Charlie', 'Unicorn', 'butt', 1)
+
+
+def test_remove_rel_DNE_prop(loaded_lpg):
+    """Test that we raise an error if removing DNE prop."""
+    loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
+    with pytest.raises(AttributeError):
+        loaded_lpg.remove_rel_prop('buddies', 'Charlie', 'Unicorn', 'butt')
+
+
+def test_rel_repr(loaded_lpg):
+    """Test that we get the expected string when 'calling' the class."""
+    loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
+    assert repr(loaded_lpg._relationships['buddies']['Charlie']['Unicorn']) == "Name: buddies\nProperties:\rsince: 1985"
+
+
+def test_adding_self_ref_rel(loaded_lpg):
+    """Test that we get an error when trying to add a rel b/w node and self."""
+    with pytest.raises(ValueError):
+        loaded_lpg.add_rel_props('buddies', 'Charlie', 'Charlie', since='birth')
+
+
+def test_get_rel_props(loaded_lpg):
+    """Test that we get the appropriate properties back."""
+    loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
+    assert loaded_lpg.get_relationship_properties('buddies', 'Charlie', 'Unicorn') == \
+           {'since': 1985}
+
+# ====================== RETRIEVAL =============================
 
 
 def test_get_relationships(loaded_lpg):
