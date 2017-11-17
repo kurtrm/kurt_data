@@ -11,6 +11,7 @@ class Node:
         """Initialized nodes contain properties and methods to view them."""
         self.name = name
         self.properties = {}
+        self.labels = []
 
     def add_property(self, property_, value):
         """Method to add a property to a node."""
@@ -32,10 +33,19 @@ class Node:
             raise AttributeError("Node does not contain that property")
         del self.properties[property_]
 
+    def add_label(self, label):
+        """Adds a label to the node."""
+        if label in self.labels:
+            raise ValueError('Label already set on node.')
+        self.labels.append(label)
+
+    def remove_label(self, label):
+        """Removes a label from a node."""
+        self.labels.remove(label)
+
     def __repr__(self):
         """Show the properties of the node."""
         props = "Name: {}\nProperties:".format(self.name)
-#        import pdb; pdb.set_trace()
         for key, value in self.properties.items():
             props += '\r{}: {}'.format(key, value)
         return props
@@ -48,6 +58,7 @@ class Relationship:
         """Initialize relationships as to contain properites like nodes."""
         self.name = name
         self.properties = {}
+        self.labels = []
 
     def add_property(self, property_, value):
         """Method to add a property to a node."""
@@ -68,6 +79,16 @@ class Relationship:
         if property_ not in self.properties:
             raise AttributeError("Node does not contain that property")
         del self.properties[property_]
+
+    def add_label(self, label):
+        """Adds a label to the node."""
+        if label in self.labels:
+            raise ValueError('Label already set on node.')
+        self.labels.append(label)
+
+    def remove_label(self, label):
+        """Removes a label from a node."""
+        self.labels.remove(label)
 
     def __repr__(self):
         """Show the properties of the node."""
