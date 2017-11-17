@@ -195,7 +195,7 @@ class LabeledPropertyGraph:
 
     def get_relationship_properties(self, name, node_a, node_b):
         """Return properties of a relationship between two nodes."""
-        return self._relationship[name][node_a][node_b].properties()
+        return self._relationships[name][node_a][node_b].properties
 
     def get_node_properties(self, name):
         """Return properties of a node."""

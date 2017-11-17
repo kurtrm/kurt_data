@@ -371,6 +371,13 @@ def test_adding_self_ref_rel(loaded_lpg):
     with pytest.raises(ValueError):
         loaded_lpg.add_rel_props('buddies', 'Charlie', 'Charlie', since='birth')
 
+
+def test_get_rel_props(loaded_lpg):
+    """Test that we get the appropriate properties back."""
+    loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
+    assert loaded_lpg.get_relationship_properties('buddies', 'Charlie', 'Unicorn') == \
+           {'since': 1985}
+
 # ====================== RETRIEVAL =============================
 
 
