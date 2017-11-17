@@ -427,3 +427,13 @@ def test_nodes_with_relationships_2(loaded_lpg):
         loaded_lpg.add_relationship('acquaintances', 'Billy', node)
     assert loaded_lpg.nodes_with_relationship('acquaintances') == \
         list(loaded_lpg._relationships['acquaintances'].keys())
+
+
+def test_has_relationship_true(loaded_lpg):
+    """Ensure returns given relationship."""
+    assert loaded_lpg.has_relationship('Charlie', 'Unicorn', 'buddies', both_ways=True)
+
+
+def test_has_relationship_false(loaded_lpg):
+    """ensure returns false."""
+    assert not loaded_lpg.has_relationship('Charlie', 'Unicorn', 'siblings')
