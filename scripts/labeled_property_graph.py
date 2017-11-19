@@ -12,6 +12,7 @@ Implementation of a labeled property graph.
 # - Breadth-first
 # - Dijkstra's
 # - A*
+# TODO: Need __repr__ for the lpg class itself
 
 # ===================================
 
