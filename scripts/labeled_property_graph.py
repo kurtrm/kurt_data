@@ -2,6 +2,18 @@
 Implementation of a labeled property graph.
 
 """
+# ===================================
+# TODO: Number of relationships a node has
+# TODO: Number of nodes that have a given relationship
+# TODO: Number of nodes with a relationship
+# TODO: Number of nodes with a label
+# TODO: Traversals:
+# - Depth first
+# - Breadth-first
+# - Dijkstra's
+# - A*
+
+# ===================================
 
 
 class Node:
@@ -135,6 +147,8 @@ class LabeledPropertyGraph:
     def add_relationship(self, name, node_a, node_b, both_ways=False):
         """Refactored add_relationship for EAFP."""
         # TODO: NEED LOGIC SO A NODE CANT HAVE A REL WITH ITSELF
+        if node_a == node_b:
+            raise ValueError("Node should not have a relationship with itself.")
         nodes = self.nodes()
         if node_a not in nodes or node_b not in nodes:
             raise KeyError('A node is not present in this graph')
@@ -150,12 +164,10 @@ class LabeledPropertyGraph:
                 key = key_errors.args[0]
                 if key == rel:
                     self._relationships[rel] = {
-                        a: {b: Relationship(rel)}
-                    }
+                        a: {b: Relationship(rel)}}
                 elif key == a:
                     self._relationships[rel][a] = {
-                        b: Relationship(rel)
-                    }
+                        b: Relationship(rel)}
             try:
                 self._graph[a][b].append(rel)
             except AttributeError:
@@ -259,9 +271,5 @@ class LabeledPropertyGraph:
 
     def add_rel_props(self, rel, node_a, node_b, **kwargs):
         """Add relationship props with values."""
-        if node_a == node_b:
-            raise ValueError("Node should not have a relationship with itself.")
         for key, value in kwargs.items():
             self._relationships[rel][node_a][node_b].add_property(key, value)
-
-# TODO: Traversals
