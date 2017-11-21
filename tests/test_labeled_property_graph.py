@@ -8,7 +8,7 @@ import random
 @pytest.fixture
 def lpg():
     """Fixture of labeled property graph(lpg) for testing."""
-    from kurt_data.scripts.labeled_property_graph import LabeledPropertyGraph
+    from ..src.labeled_property_graph import LabeledPropertyGraph
     lpg = LabeledPropertyGraph()
     return lpg
 
@@ -16,7 +16,7 @@ def lpg():
 @pytest.fixture
 def loaded_lpg():
     """Fixture of a loaded lpg."""
-    from kurt_data.scripts.labeled_property_graph import LabeledPropertyGraph
+    from ..src.labeled_property_graph import LabeledPropertyGraph
     lpg = LabeledPropertyGraph()
     lpg.add_node('Charlie')
     lpg.add_node('Unicorn')
@@ -30,7 +30,7 @@ def loaded_lpg():
 @pytest.fixture
 def big_lpg():
     """Lpg that's big and nasty."""
-    from kurt_data.scripts.labeled_property_graph import LabeledPropertyGraph
+    from ..src.labeled_property_graph import LabeledPropertyGraph
     lpg = LabeledPropertyGraph()
     faker = Faker()
     phone_nums = list(set([faker.phone_number() for _ in range(100)]))
@@ -389,7 +389,7 @@ def test_rel_repr(loaded_lpg):
 def test_adding_self_ref_rel(loaded_lpg):
     """Test that we get an error when trying to add a rel b/w node and self."""
     with pytest.raises(ValueError):
-        loaded_lpg.add_rel_props('buddies', 'Charlie', 'Charlie', since='birth')
+        loaded_lpg.add_relationship('buddies', 'Charlie', 'Charlie')
 
 
 def test_get_rel_props(loaded_lpg):

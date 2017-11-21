@@ -62,7 +62,7 @@ def parse_multiple_bills(directory):
     bill_list = os.listdir(directory)
     bill_directory = {}
     for bill in bill_list:
-        path = 'bills/' + bill
+        path = '../bills/' + bill
         bill_key = bill[:-4]
         bill_directory[bill_key] = parse_bill(path)
 

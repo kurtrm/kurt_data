@@ -8,7 +8,7 @@ import pickle
 import pytest
 import PyPDF2
 
-from ..scripts import tmobile_bill_parser as parser
+from src import tmobile_bill_parser as parser
 
 """
 
