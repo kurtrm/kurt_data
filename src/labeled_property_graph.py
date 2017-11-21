@@ -2,6 +2,19 @@
 Implementation of a labeled property graph.
 
 """
+# ===================================
+# TODO: Number of relationships a node has
+# TODO: Number of nodes that have a given relationship
+# TODO: Number of nodes with a relationship
+# TODO: Number of nodes with a label
+# TODO: Traversals:
+# - Depth first
+# - Breadth-first
+# - Dijkstra's
+# - A*
+# TODO: Need __repr__ for the lpg class itself
+
+# ===================================
 
 
 class Node:
@@ -11,6 +24,7 @@ class Node:
         """Initialized nodes contain properties and methods to view them."""
         self.name = name
         self.properties = {}
+        self.labels = []
 
     def add_property(self, property_, value):
         """Method to add a property to a node."""
@@ -32,10 +46,19 @@ class Node:
             raise AttributeError("Node does not contain that property")
         del self.properties[property_]
 
+    def add_label(self, label):
+        """Adds a label to the node."""
+        if label in self.labels:
+            raise ValueError('Label already set on node.')
+        self.labels.append(label)
+
+    def remove_label(self, label):
+        """Removes a label from a node."""
+        self.labels.remove(label)
+
     def __repr__(self):
         """Show the properties of the node."""
         props = "Name: {}\nProperties:".format(self.name)
-#        import pdb; pdb.set_trace()
         for key, value in self.properties.items():
             props += '\r{}: {}'.format(key, value)
         return props
@@ -48,6 +71,7 @@ class Relationship:
         """Initialize relationships as to contain properites like nodes."""
         self.name = name
         self.properties = {}
+        self.labels = []
 
     def add_property(self, property_, value):
         """Method to add a property to a node."""
@@ -68,6 +92,16 @@ class Relationship:
         if property_ not in self.properties:
             raise AttributeError("Node does not contain that property")
         del self.properties[property_]
+
+    def add_label(self, label):
+        """Adds a label to the node."""
+        if label in self.labels:
+            raise ValueError('Label already set on node.')
+        self.labels.append(label)
+
+    def remove_label(self, label):
+        """Removes a label from a node."""
+        self.labels.remove(label)
 
     def __repr__(self):
         """Show the properties of the node."""
@@ -114,6 +148,8 @@ class LabeledPropertyGraph:
     def add_relationship(self, name, node_a, node_b, both_ways=False):
         """Refactored add_relationship for EAFP."""
         # TODO: NEED LOGIC SO A NODE CANT HAVE A REL WITH ITSELF
+        if node_a == node_b:
+            raise ValueError("Node should not have a relationship with itself.")
         nodes = self.nodes()
         if node_a not in nodes or node_b not in nodes:
             raise KeyError('A node is not present in this graph')
@@ -129,12 +165,10 @@ class LabeledPropertyGraph:
                 key = key_errors.args[0]
                 if key == rel:
                     self._relationships[rel] = {
-                        a: {b: Relationship(rel)}
-                    }
+                        a: {b: Relationship(rel)}}
                 elif key == a:
                     self._relationships[rel][a] = {
-                        b: Relationship(rel)
-                    }
+                        b: Relationship(rel)}
             try:
                 self._graph[a][b].append(rel)
             except AttributeError:
@@ -238,9 +272,5 @@ class LabeledPropertyGraph:
 
     def add_rel_props(self, rel, node_a, node_b, **kwargs):
         """Add relationship props with values."""
-        if node_a == node_b:
-            raise ValueError("Node should not have a relationship with itself.")
         for key, value in kwargs.items():
             self._relationships[rel][node_a][node_b].add_property(key, value)
-
-# TODO: Traversals
