@@ -25,15 +25,14 @@ My goals are to:
 
 To do:
 
+- Stick to one type for each node. Right now you change between a string and a list, which clutters the code.
 - Define __repr__ for relationship and node classes.
 - Determine useful attributes that can be placed on these nodes besides their properties.
-- Consider dividing up the LPG class into several classes. It has many methods and is made of several dictionaries.
-- Implement a CLI 
-- Refactor all code for EAFP paradigm.
+- Implement a CLI.
 - Refactor tables as described in notebook.
 - Refactor current weighted graph implementation.
 - Put it into an existing graph database.
-- Make various visualizations using Matplotlib (See notebook for more information.)
+- Make various visualizations using Matplotlib, networkx (See notebook for more information.)
 
 ## Google Maps Location History
 
