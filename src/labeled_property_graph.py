@@ -171,11 +171,8 @@ class LabeledPropertyGraph:
                         b: Relationship(rel)}
             try:
                 self._graph[a][b].append(rel)
-            except AttributeError:
-                curr_rel = self._graph[a][b]
-                self._graph[a][b] = [curr_rel, rel]
             except KeyError:
-                self._graph[a][b] = rel
+                self._graph[a][b] = [rel]
 
         add(name, node_a, node_b)
         if both_ways:
@@ -184,12 +181,7 @@ class LabeledPropertyGraph:
     def remove_relationship(self, name, node_a, node_b):
         """Remove a relationship between two nodes."""
         del self._relationships[name][node_a][node_b]
-        try:
-            self._graph[node_a][node_b].remove(name)
-            if len(self._graph[node_a][node_b]) < 2:
-                self._graph[node_a][node_b] = self._graph[node_a][node_b][0]
-        except AttributeError:
-            del self._graph[node_a][node_b]
+        self._graph[node_a][node_b].remove(name)
 
     def remove_node(self, name):
         """Remove a node and all of its relationships."""
