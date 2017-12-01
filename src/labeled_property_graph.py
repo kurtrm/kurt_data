@@ -120,13 +120,9 @@ class LabeledPropertyGraph:
         self._nodes = {}
         self._relationships = {}
 
-# =====================================================
-# TODO: Consider adding special methods to the LPG.
-
-#    def __getitem__(self, key, type=None):
-#        """Return _graphat key."""
-#        return self._graph[key]
-# =====================================================
+    def __getitem__(self, key):
+        """Return _graphat key."""
+        return self._nodes[key]
 
     def nodes(self):
         """Return a list of nodes in the graph."""
