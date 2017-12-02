@@ -82,7 +82,7 @@ def test_adding_lots_of_nodes(lpg):
 
 def test_adding_lots_of_nodes_2(lpg):
     """Ensure we can put a lot of nodes in the graph."""
-    names = [Faker().name() for _ in range(20)]
+    names = list(set([Faker().name() for _ in range(20)]))
     names.append(3451)
     names.append(3.21)
     names.append(None)
