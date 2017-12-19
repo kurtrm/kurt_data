@@ -38,26 +38,9 @@ class Node:
         """Change or add node properties."""
         self.properties[key] = item
 
-
-    def add_property(self, property_, value):
-        """Method to add a property to a node."""
-        if property_ in self.properties:
-            raise KeyError("Property already exists, use change_property()"
-                           "to alter property value")
-        self.properties[property_] = value
-
-    def change_property(self, property_, value):
-        """Method to alter a value on a property."""
-        if property_ not in self.properties:
-            raise AttributeError("Property does not exist, use add_property()"
-                                 "to add a property")
-        self.properties[property_] = value
-
-    def remove_property(self, property_):
-        """Method to remove a property from a node."""
-        if property_ not in self.properties:
-            raise AttributeError("Node does not contain that property")
-        del self.properties[property_]
+    def __delitem__(self, key):
+        """Remove a property from the node."""
+        del self.properties[key]
 
     def add_label(self, label):
         """Adds a label to the node."""
@@ -71,8 +54,10 @@ class Node:
 
     def __repr__(self):
         """Show the properties of the node."""
-        props = "Name: {}\nProperties:".format(self.name)
+        props = "Name: {}"
+        "______________________________"
+        "Properties".format(self.name)
+        "______________________________"
         for key, value in self.properties.items():
             props += '\r{}: {}'.format(key, value)
         return props
-
