@@ -75,3 +75,61 @@ Properties (key: value)
     def __str__(self):
         """Return the same thing as repr."""
         return self.__repr__()
+
+
+class Relationship:
+    """Relationship object that will be able to have properties as well."""
+
+    def __init__(self, name):
+        """Initialize relationships as to contain properites like nodes."""
+        self.name = name
+        self._properties = {}
+        self.labels = []
+
+    def __getitem__(self, key):
+        """Get node properties."""
+        return self._properties[key]
+
+    def __setitem__(self, key, item):
+        """Change or add node properties."""
+        self._properties[key] = item
+
+    def __delitem__(self, key):
+        """Remove a property from the node."""
+        del self._properties[key]
+
+    def add_label(self, label):
+        """Adds a label to the node."""
+        if label in self.labels:
+            raise ValueError('Label already set on relationship.')
+        self.labels.append(label)
+
+    def remove_label(self, label):
+        """Removes a label from a node."""
+        self.labels.remove(label)
+
+    @property
+    def properties(self):
+        """Return the keys in self._properties."""
+        return list(self._properties.keys())
+
+    def __repr__(self):
+        """Show the properties of the node."""
+        props = """
+-----------
+Name: {}
+-----------
+Properties (key: value)
+""".format(self.name)
+        for key, value in self._properties.items():
+            props += '\r{}: {}'.format(key, value)
+        props += '\r\n\r\n-----------\rLabels: '
+        props += ', '.join(self.labels)
+        props += '\r\n\r\n'
+        return props
+
+    def __str__(self):
+        """Return the same thing as repr."""
+        return self.__repr__()
+
+
