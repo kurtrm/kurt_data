@@ -59,8 +59,10 @@ class Node:
 Name: {}
 -----------
 Properties (key: value)
------------""".format(self.name)
+""".format(self.name)
         for key, value in self._properties.items():
             props += '\r{}: {}'.format(key, value)
+        props += '\r\n\r\n-----------\rLabels: '
+        props += ', '.join(self.labels)
         props += '\r\n\r\n'
         return props
