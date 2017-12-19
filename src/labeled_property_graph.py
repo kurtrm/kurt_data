@@ -143,7 +143,6 @@ class LabeledPropertyGraph:
 
     def add_relationship(self, name, node_a, node_b, both_ways=False):
         """Refactored add_relationship for EAFP."""
-        # TODO: NEED LOGIC SO A NODE CANT HAVE A REL WITH ITSELF
         if node_a == node_b:
             raise ValueError("Node should not have a relationship with itself.")
         nodes = self.nodes()
