@@ -26,6 +26,10 @@ class Node:
         self.properties = {}
         self.labels = []
 
+    def __getitem__(self, key):
+        """Get node properties."""
+        return self.properties[key]
+
     def add_property(self, property_, value):
         """Method to add a property to a node."""
         if property_ in self.properties:
@@ -105,7 +109,7 @@ class Relationship:
 
     def __repr__(self):
         """Show the properties of the node."""
-        props = "Name: {}\nProperties:".format(self.name)
+        props = f"Name: {self.name}\nProperties:"
         for key, value in self.properties.items():
             props += '\r{}: {}'.format(key, value)
         return props
@@ -124,6 +128,7 @@ class LabeledPropertyGraph:
         """Return _graphat key."""
         return self._nodes[key]
 
+    #  Consider property decorator
     def nodes(self):
         """Return a list of nodes in the graph."""
         return [node for node in self._nodes.keys()]
