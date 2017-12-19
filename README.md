@@ -22,6 +22,7 @@ My goals are to:
 - [ ] Learn how to implement the data into existing libraries and databases.
 - [ ] Determine how to weight each vertex or edge.
 - [ ] Determine perspectives on the data and how to present each layer.
+- [ ] Refactor the graph to incorporate more advanced Pythonic tools.
 
 To do:
 
