@@ -27,20 +27,20 @@ class Node:
     def __init__(self, name):
         """Initialized nodes contain properties and methods to view them."""
         self.name = name
-        self.properties = {}
+        self._properties = {}
         self.labels = []
 
     def __getitem__(self, key):
         """Get node properties."""
-        return self.properties[key]
+        return self._properties[key]
 
     def __setitem__(self, key, item):
         """Change or add node properties."""
-        self.properties[key] = item
+        self._properties[key] = item
 
     def __delitem__(self, key):
         """Remove a property from the node."""
-        del self.properties[key]
+        del self._properties[key]
 
     def add_label(self, label):
         """Adds a label to the node."""
@@ -54,10 +54,13 @@ class Node:
 
     def __repr__(self):
         """Show the properties of the node."""
-        props = "Name: {}"
-        "______________________________"
-        "Properties".format(self.name)
-        "______________________________"
-        for key, value in self.properties.items():
+        props = """
+-----------
+Name: {}
+-----------
+Properties (key: value)
+-----------""".format(self.name)
+        for key, value in self._properties.items():
             props += '\r{}: {}'.format(key, value)
+        props += '\r\n\r\n'
         return props
