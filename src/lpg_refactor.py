@@ -52,6 +52,11 @@ class Node:
         """Removes a label from a node."""
         self.labels.remove(label)
 
+    @property
+    def properties(self):
+        """Return the keys in self._properties."""
+        return list(self._properties.keys())
+
     def __repr__(self):
         """Show the properties of the node."""
         props = """
@@ -66,3 +71,7 @@ Properties (key: value)
         props += ', '.join(self.labels)
         props += '\r\n\r\n'
         return props
+
+    def __str__(self):
+        """Return the same thing as repr."""
+        return self.__repr__()
