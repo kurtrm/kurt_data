@@ -22,6 +22,7 @@ for simplicity. Particularly:
 #  TODO: Just realized I forgot that the tuple keys will have to return a list
 #  of relationships. This is a major issue affecting this refactor.
 
+
 class Node:
     """Node object that will have a relationship to other nodes."""
 
