@@ -9,39 +9,34 @@ var svg = d3.select("body").append("svg")
 
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
-var nodes = [
-    {"id": "Kurt", "color": "blue"},
-    {"id": "Melissa", "color": "purple"},
-    {"id": "Megan", "color": "green"},
-    {"id": "Suman", "color": "orange"},
-    {"id": "Nina", "color": "pink"}
-]
+// var nodes = [
+//     {"id": "Kurt", "color": "blue"},
+//     {"id": "Melissa", "color": "purple"},
+//     {"id": "Megan", "color": "green"},
+//     {"id": "Suman", "color": "orange"},
+//     {"id": "Nina", "color": "pink"}
+// ]
 
-var links = [
-    {"source": "Kurt", "target": "Melissa", "value": "black"},
-    {"source": "Melissa", "target": "Megan", "value": "black"},
-    {"source": "Megan", "target": "Suman", "value": "black"},
-    {"source": "Melissa", "target": "Suman", "value": "black"},
-    {"source": "Melissa", "target": "Nina", "value": "black"}
-]
+// var links = [
+//     {"source": "Kurt", "target": "Melissa", "value": "black"},
+//     {"source": "Melissa", "target": "Megan", "value": "black"},
+//     {"source": "Megan", "target": "Suman", "value": "black"},
+//     {"source": "Melissa", "target": "Suman", "value": "black"},
+//     {"source": "Melissa", "target": "Nina", "value": "black"}
+// ]
 
-var simulation = d3.forceSimulation()
-    .force("link", d3.forceLink().id(function(d){return d.id;}))
-    .force("charge", d3.forceManyBody()
-                            .strength(-30))
-    .force("center", d3.forceCenter(width / 2, height / 2));
 
 var link = svg.append("g")
     .attr("class", "links")
     .selectAll("line")
-    .data(links)
+    .data(graph_stuff.links)
     .enter().append("line")
         .attr("stroke", "grey");
 
 var node = svg.append("g")
     .attr("class", "nodes")
     .selectAll("circle")
-    .data(nodes)
+    .data(graph_stuff.nodes)
     .enter().append("circle")
     .attr("r", 5)
     .attr("fill", function(d) {return color(d.color); })
@@ -50,8 +45,15 @@ var node = svg.append("g")
         .on("drag", dragged)
         .on("end", dragended));
 
+var simulation = d3.forceSimulation()
+    .force("link", d3.forceLink().id(function(d){return d.id;}))
+    .force("charge", d3.forceManyBody()
+                            .strength(-30))
+    .force("center", d3.forceCenter(width / 2, height / 2));
+
+
 var label = svg.selectAll('.names')
-        .data(nodes)
+        .data(graph_stuff.nodes)
         .enter()
         .append("text")
             .text(function(d){ return d.id; })
@@ -72,11 +74,11 @@ node.append("title")
 
 
 simulation
-    .nodes(nodes)
+    .nodes(graph_stuff.nodes)
     .on("tick", ticked);
 
 simulation.force("link")
-    .links(links)
+    .links(graph_stuff.links)
     .distance(50);
 
 function ticked() {
