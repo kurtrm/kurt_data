@@ -19,7 +19,8 @@ for simplicity. Particularly:
         - Make it so that nodes can be added from iterables
         - Make it so relationships can be added from iterables
 """
-
+#  TODO: Just realized I forgot that the tuple keys will have to return a list
+#  of relationships. This is a major issue affecting this refactor.
 
 class Node:
     """Node object that will have a relationship to other nodes."""
@@ -157,17 +158,24 @@ class LabeledPropertyGraph:
                 raise ValueError("Graph relationships must"
                                  "be of type Relationship")
             self._relationships[key] = item
+            if self._relationships[key].name not in self._graph[key[0]][key[1]]:
+                self._graph[key[0]][key[1]].append(self._relationships[key].name)
         else:
             if not isinstance(item, Node):
                 raise ValueError("Graph nodes must"
                                  "be of type Node")
             self._nodes[key] = item
+            if key not in self._graph:
+                self._graph[key] = {}
 
     def __delitem__(self, key):
         """Delete node or relationship from graph."""
         if isinstance(key, tuple):
             del self._relationships[key]
-        del self._nodes[key]
+            self._graph[key[0]][key[1]]
+        else:
+            del self._nodes[key]
+            del self._graph[key]
 
     @property
     def nodes(self):
@@ -213,3 +221,5 @@ class LabeledPropertyGraph:
         add(node_a, node_b, name)
         if both_ways:
             add(node_b, node_a, name)
+
+    def 
