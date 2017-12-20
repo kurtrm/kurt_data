@@ -109,7 +109,7 @@ class Relationship:
 
     def __repr__(self):
         """Show the properties of the node."""
-        props = f"Name: {self.name}\nProperties:"
+        props = "Name: {}\nProperties:"
         for key, value in self.properties.items():
             props += '\r{}: {}'.format(key, value)
         return props
