@@ -162,3 +162,54 @@ class LabeledPropertyGraph:
                 raise ValueError("Graph nodes must"
                                  "be of type Node")
             self._nodes[key] = item
+
+    def __delitem__(self, key):
+        """Delete node or relationship from graph."""
+        if isinstance(key, tuple):
+            del self._relationships[key]
+        del self._nodes[key]
+
+    @property
+    def nodes(self):
+        """Return a list of nodes in the graph."""
+        return [node for node in self._nodes.keys()]
+
+    @property
+    def relationships(self):
+        """Return list of unique relationships."""
+        return [edge for edge in self._relationships.keys()]
+
+    def unique_relationships(self):
+        """Return a list of unique relationship names."""
+        return set([edge.name for edge in self._relationships.values()])
+
+    def add_node(self, name):
+        """Add a node and pass the name to the node.name."""
+        if name in self.nodes:
+            raise KeyError('Node already exists in graph')
+        node = Node(name)
+        self._graph[name] = {}
+        self._nodes[name] = node
+
+    def add_relationship(self, node_a, node_b, name, both_ways=False):
+        """Refactored add_relationship for EAFP."""
+        if node_a == node_b:
+            raise ValueError("Node should not have a relationship with itself.")
+        nodes = self.nodes
+        if node_a not in nodes or node_b not in nodes:
+            raise KeyError('A node is not present in this graph')
+
+        def add(a, b, rel):
+            """Local function to perform operation."""
+            if self._relationships.get(a, b):
+                raise ValueError('{} -> {} relationship'
+                                 'already exists'.format(a, b))
+            self._relationships[a, b] = Relationship(rel)
+            try:
+                self._graph[a][b].append(rel)
+            except KeyError:
+                self._graph[a][b] = [rel]
+
+        add(node_a, node_b, name)
+        if both_ways:
+            add(node_b, node_a, name)
