@@ -32,6 +32,12 @@ var node = svg.append("g")
         .on("drag", dragged)
         .on("end", dragended));
 
+var path = svg.append("svg:g")
+              .selectAll("path")
+              .data(graph_stuff.links)
+              .enter().append("svg:path")
+              .attr("class", "link");
+
 var simulation = d3.forceSimulation()
     .force("link", d3.forceLink().id(function(d){return d.id;}))
     .force("charge", d3.forceManyBody()
