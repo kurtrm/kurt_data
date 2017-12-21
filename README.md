@@ -18,22 +18,19 @@ My goals are to:
 - [x] Parse each bill to retrieve the data. (Still requires testing.)
 - [x] Plug the data into a DataFrame.
 - [x] Analyze which columns need to be discarded and which are useful.
-- [ ] Research existing graph implementations and databases.
-- [ ] Learn how to implement the data into existing libraries and databases.
-- [ ] Determine how to weight each vertex or edge.
+- [x] Research existing graph implementations and databases.
 - [ ] Determine perspectives on the data and how to present each layer.
 - [ ] Refactor the graph to incorporate more advanced Pythonic tools.
 
 To do:
 
-- Stick to one type for each node. Right now you change between a string and a list, which clutters the code.
-- Define __repr__ for relationship and node classes.
+- ~~Stick to one type for each node. Right now you change between a string and a list, which clutters the code.~~
+- ~~Define __repr__ for relationship and node classes.~~
 - Determine useful attributes that can be placed on these nodes besides their properties.
 - Implement a CLI.
 - Refactor tables as described in notebook.
-- Refactor current weighted graph implementation.
 - Put it into an existing graph database.
-- Make various visualizations using Matplotlib, networkx (See notebook for more information.)
+- ~~Make various visualizations using Matplotlib, networkx (See notebook for more information.)~~ D3.js
 
 ## Google Maps Location History
 
