@@ -1,0 +1,14 @@
+graph_stuff = {"nodes": [
+    {"id": "Kurt", "color": "blue", "radius": 15},
+    {"id": "Melissa", "color": "purple", "radius": 5},
+    {"id": "Megan", "color": "green", "radius": 5},
+    {"id": "Suman", "color": "orange", "radius": 5},
+    {"id": "Nina", "color": "pink", "radius": 5}
+],
+"links": [
+ {"source": "Kurt", "target": "Melissa", "value": "black"},
+ {"source": "Melissa", "target": "Megan", "value": "black"},
+ {"source": "Megan", "target": "Suman", "value": "black"},
+ {"source": "Melissa", "target": "Suman", "value": "black"},
+ {"source": "Melissa", "target": "Nina", "value": "black"}
+]}
