@@ -21,6 +21,7 @@ My goals are to:
 - [x] Research existing graph implementations and databases.
 - [ ] Determine perspectives on the data and how to present each layer.
 - [ ] Refactor the graph to incorporate more advanced Pythonic tools.
+- [ ] Refactor to make anything that generates a list make a generator instead.
 
 To do:
 
