@@ -1,9 +1,9 @@
 graph_stuff = {"nodes": [
-    {"id": "Kurt", "color": "blue"},
-    {"id": "Melissa", "color": "purple"},
-    {"id": "Megan", "color": "green"},
-    {"id": "Suman", "color": "orange"},
-    {"id": "Nina", "color": "pink"}
+    {"id": "Kurt", "color": "blue", "radius": 15},
+    {"id": "Melissa", "color": "purple", "radius": 5},
+    {"id": "Megan", "color": "green", "radius": 5},
+    {"id": "Suman", "color": "orange", "radius": 5},
+    {"id": "Nina", "color": "pink", "radius": 5}
 ],
 "links": [
  {"source": "Kurt", "target": "Melissa", "value": "black"},
