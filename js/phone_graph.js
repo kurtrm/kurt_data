@@ -9,21 +9,21 @@ var svg = d3.select("body").append("svg")
 
 var color = d3.scaleOrdinal(d3.schemeCategory20);
 
-// the variable 'graph_stuff' is scripted in the html.
+// the variable 'mega_phone_graph' is scripted in the html.
 // I may want Python to dynamically generate json, which will be passed
 // to this file.
 
 var link = svg.append("g")
     .attr("class", "links")
     .selectAll("line")
-    .data(graph_stuff.links)
+    .data(mega_phone_graph.links.Text)
     .enter().append("line")
         .attr("stroke", "grey");
 
 var node = svg.append("g")
     .attr("class", "nodes")
     .selectAll("circle")
-    .data(graph_stuff.nodes)
+    .data(mega_phone_graph.nodes)
     .enter().append("circle")
     .attr("r", function(d){return d.radius;})
     .attr("fill", function(d) {return color(d.color); })
@@ -34,7 +34,7 @@ var node = svg.append("g")
 
 var path = svg.append("svg:g")
               .selectAll("path")
-              .data(graph_stuff.links)
+              .data(mega_phone_graph.links.Text)
               .enter().append("svg:path")
               .attr("class", "link");
 
@@ -46,7 +46,7 @@ var simulation = d3.forceSimulation()
 
 
 var label = svg.selectAll('.names')
-        .data(graph_stuff.nodes)
+        .data(mega_phone_graph.nodes)
         .enter()
         .append("text")
             .text(function(d){ return d.id; })
@@ -67,11 +67,11 @@ node.append("title")
 
 
 simulation
-    .nodes(graph_stuff.nodes)
+    .nodes(mega_phone_graph.nodes)
     .on("tick", ticked);
 
 simulation.force("link")
-    .links(graph_stuff.links)
+    .links(mega_phone_graph.links.Text)
     .distance(50);
 
 function ticked() {
