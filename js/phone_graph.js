@@ -17,6 +17,7 @@ var link = svg.append("g")
     .attr("class", "links")
     .selectAll("line")
     .data(mega_phone_graph.links.Text)
+    .data(mega_phone_graph.links.Talk)
     .enter().append("line")
         .attr("stroke", "grey");
 
@@ -35,6 +36,7 @@ var node = svg.append("g")
 var path = svg.append("svg:g")
               .selectAll("path")
               .data(mega_phone_graph.links.Text)
+              .data(mega_phone_graph.links.Talk)
               .enter().append("svg:path")
               .attr("class", "link");
 
@@ -72,7 +74,8 @@ simulation
 
 simulation.force("link")
     .links(mega_phone_graph.links.Text)
-    .distance(50);
+    .links(mega_phone_graph.links.Talk)
+    .distance(function(d){return d.value;});
 
 function ticked() {
     link
