@@ -59,7 +59,7 @@ class Node:
         """Return the keys in self._properties."""
         return list(self._properties.keys())
 
-    def __repr__(self):
+    def __str__(self):
         """Show the properties of the node."""
         props = """
 -----------
@@ -74,9 +74,11 @@ Properties (key: value)
         props += '\r\n\r\n'
         return props
 
-    def __str__(self):
+    def __repr__(self):
         """Return the same thing as repr."""
-        return self.__repr__()
+        return "<[{}] class Node {} Labels {} Properties>".format(self.name,
+                                                                  len(self.labels),
+                                                                  len(self.properties))
 
 
 class Relationship:
@@ -115,7 +117,7 @@ class Relationship:
         """Return the keys in self._properties."""
         return list(self._properties.keys())
 
-    def __repr__(self):
+    def __str__(self):
         """Show the properties of the node."""
         props = """
 -----------
@@ -130,9 +132,11 @@ Properties (key: value)
         props += '\r\n\r\n'
         return props
 
-    def __str__(self):
+    def __repr__(self):
         """Return the same thing as repr."""
-        return self.__repr__()
+        return "<[{}] Relationship {} Labels {} Properties>".format(self.name,
+                                                                    len(self.labels),
+                                                                    len(self.properties))
 
 
 class LabeledPropertyGraph:
@@ -223,4 +227,4 @@ class LabeledPropertyGraph:
         if both_ways:
             add(node_b, node_a, name)
 
-    def 
+    # def 
