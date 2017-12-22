@@ -16,8 +16,7 @@ var color = d3.scaleOrdinal(d3.schemeCategory20);
 var link = svg.append("g")
     .attr("class", "links")
     .selectAll("line")
-    .data(mega_phone_graph.links.Text)
-    .data(mega_phone_graph.links.Talk)
+    .data(mega_phone_graph.links.Text.concat(mega_phone_graph.links.Talk))
     .enter().append("line")
         .attr("stroke", "grey");
 
@@ -33,12 +32,12 @@ var node = svg.append("g")
         .on("drag", dragged)
         .on("end", dragended));
 
-var path = svg.append("svg:g")
-              .selectAll("path")
-              .data(mega_phone_graph.links.Text)
-              .data(mega_phone_graph.links.Talk)
-              .enter().append("svg:path")
-              .attr("class", "link");
+// var path = svg.append("svg:g")
+//               .selectAll("path")
+//               .data(mega_phone_graph.links.Text)
+//               .data(mega_phone_graph.links.Talk)
+//               .enter().append("svg:path")
+//               .attr("class", "link");
 
 var simulation = d3.forceSimulation()
     .force("link", d3.forceLink().id(function(d){return d.id;}))
@@ -73,8 +72,7 @@ simulation
     .on("tick", ticked);
 
 simulation.force("link")
-    .links(mega_phone_graph.links.Text)
-    .links(mega_phone_graph.links.Talk)
+    .links(mega_phone_graph.links.Text.concat(mega_phone_graph.links.Talk))
     .distance(function(d){return d.value;});
 
 function ticked() {
