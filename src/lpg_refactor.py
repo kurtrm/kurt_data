@@ -252,4 +252,6 @@ class LabeledPropertyGraph:
                 nodes.append(key)
         return nodes
 
-    
+    def neighbors(self, node):
+        """Return all nodes node has relationship with."""
+        return [key[1] for key in self._relationships.keys() if node == key[0] ]
