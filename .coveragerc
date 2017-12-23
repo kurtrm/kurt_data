@@ -7,5 +7,6 @@ omit =
     src/fitbit_data.py
     src/tmobile_bill_parser.py
     src/lpg_cli.py
+    src/lpg_refactor.py
 [report]
 show_missing = False

@@ -106,3 +106,4 @@ data/*
 bills/*
 tests/text_docs.p
 *.vcf
+*.json

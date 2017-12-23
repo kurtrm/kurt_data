@@ -59,7 +59,7 @@ class Node:
         """Return the keys in self._properties."""
         return list(self._properties.keys())
 
-    def __repr__(self):
+    def __str__(self):
         """Show the properties of the node."""
         props = """
 -----------
@@ -74,9 +74,11 @@ Properties (key: value)
         props += '\r\n\r\n'
         return props
 
-    def __str__(self):
+    def __repr__(self):
         """Return the same thing as repr."""
-        return self.__repr__()
+        return "<[{}] class Node {} Labels {} Properties>".format(self.name,
+                                                                  len(self.labels),
+                                                                  len(self.properties))
 
 
 class Relationship:
@@ -115,7 +117,7 @@ class Relationship:
         """Return the keys in self._properties."""
         return list(self._properties.keys())
 
-    def __repr__(self):
+    def __str__(self):
         """Show the properties of the node."""
         props = """
 -----------
@@ -130,22 +132,37 @@ Properties (key: value)
         props += '\r\n\r\n'
         return props
 
-    def __str__(self):
+    def __repr__(self):
         """Return the same thing as repr."""
-        return self.__repr__()
+        return "<[{}] Relationship {} Labels {} Properties>".format(self.name,
+                                                                    len(self.labels),
+                                                                    len(self.properties))
 
 
 class LabeledPropertyGraph:
     """Define a labeled property graph as dictionary composition."""
 
     def __init__(self):
-        """Initialize the graph as a dictionary."""
-        self._graph = {}
+        """
+        Initialize the graph as a dictionary (well, several).
+        Right now, _graph maps the nodes and relationships. It does not
+        contain node objects.
+
+        _nodes contains the actual node objects.
+
+        _relationships contains the actual relationship objects.
+        """
         self._nodes = {}
         self._relationships = {}
 
     def __getitem__(self, key):
-        """Return either node or relationship."""
+        """
+        Return either node or relationship, depending on what type of
+        object is passed into the subscripts. For relationships, this returns
+        a list of relationships. The user can then grab a particular
+        relationship by passing the name of the desired link into another
+        set of subscripts.
+        """
         if isinstance(key, tuple):
             return self._relationships[key]
         return self._nodes[key]
@@ -158,25 +175,22 @@ class LabeledPropertyGraph:
             if not isinstance(item, Relationship):
                 raise ValueError("Graph relationships must"
                                  "be of type Relationship")
-            self._relationships[key] = item
-            if self._relationships[key].name not in self._graph[key[0]][key[1]]:
-                self._graph[key[0]][key[1]].append(self._relationships[key].name)
+            self._relationships[key][item] = Relationship(item)
         else:
             if not isinstance(item, Node):
                 raise ValueError("Graph nodes must"
                                  "be of type Node")
             self._nodes[key] = item
-            if key not in self._graph:
-                self._graph[key] = {}
 
     def __delitem__(self, key):
         """Delete node or relationship from graph."""
         if isinstance(key, tuple):
             del self._relationships[key]
-            self._graph[key[0]][key[1]]
         else:
             del self._nodes[key]
-            del self._graph[key]
+            for keys in self._relationships.keys():
+                if key in keys:
+                    del self._relationships[keys]
 
     @property
     def nodes(self):
@@ -190,14 +204,13 @@ class LabeledPropertyGraph:
 
     def unique_relationships(self):
         """Return a list of unique relationship names."""
-        return set([edge.name for edge in self._relationships.values()])
+        return set([key for link in self._relationships.values() for key in link.keys()])
 
     def add_node(self, name):
         """Add a node and pass the name to the node.name."""
         if name in self.nodes:
             raise KeyError('Node already exists in graph')
         node = Node(name)
-        self._graph[name] = {}
         self._nodes[name] = node
 
     def add_relationship(self, node_a, node_b, name, both_ways=False):
@@ -210,17 +223,45 @@ class LabeledPropertyGraph:
 
         def add(a, b, rel):
             """Local function to perform operation."""
-            if self._relationships.get(a, b):
-                raise ValueError('{} -> {} relationship'
-                                 'already exists'.format(a, b))
-            self._relationships[a, b] = Relationship(rel)
             try:
-                self._graph[a][b].append(rel)
+                if self._relationships[a, b].get((rel)):
+                    raise ValueError('{} -> {} relationship'
+                                     'already exists'.format(a, b))
+                else:
+                    self._relationships[a, b][rel] = Relationship(rel)
             except KeyError:
-                self._graph[a][b] = [rel]
-
+                self._relationships[a, b] = {rel: Relationship(rel)}
         add(node_a, node_b, name)
         if both_ways:
             add(node_b, node_a, name)
 
-    def 
+    def get_relationships(self, node_a, node_b):
+        """Return all relationships between two nodes."""
+        return self._relationships[node_a, node_b].keys()
+
+    def nodes_with_relationship(self, name):
+        """Return a list of nodes with a given relationship."""
+        nodes = []
+        for key, value in self._relationships.items():
+            if name in value:
+                nodes.append(key)
+        return nodes
+
+    def neighbors(self, node):
+        """Return all nodes node has relationship with."""
+        return [key[1] for key in self._relationships.keys() if node == key[0]]
+
+    def adjacent(self, node_a, node_b):
+        """Return whether a node has a certain neighbor."""
+        return (node_a, node_b) in self._relationships.keys()
+
+    def has_relationship(self, node_a, node_b, relationship, both_ways=False):
+        """Returns boolean if nodes have a particular relationship."""
+        try:
+            if both_ways:
+                return relationship in self._relationships[node_a, node_b] \
+                    and relationship in self._relationships[node_b, node_a]
+            else:
+                return relationship in self._relationships[node_a][node_b]
+        except KeyError:
+            raise KeyError('No relationship between nodes.')
