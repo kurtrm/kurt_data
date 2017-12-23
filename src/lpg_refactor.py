@@ -223,7 +223,7 @@ class LabeledPropertyGraph:
 
         def add(a, b, rel):
             """Local function to perform operation."""
-            if self._relationships.get(a, b):
+            if self._relationships.get((a, b)):
                 raise ValueError('{} -> {} relationship'
                                  'already exists'.format(a, b))
             self._relationships[a, b] = Relationship(rel)
