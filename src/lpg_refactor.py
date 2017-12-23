@@ -223,10 +223,14 @@ class LabeledPropertyGraph:
 
         def add(a, b, rel):
             """Local function to perform operation."""
-            if self._relationships.get((a, b)):
-                raise ValueError('{} -> {} relationship'
-                                 'already exists'.format(a, b))
-            self._relationships[a, b] = Relationship(rel)
+            try:
+                if self._relationships[a, b].get((rel)):
+                    raise ValueError('{} -> {} relationship'
+                                     'already exists'.format(a, b))
+                else:
+                    self._relationships[a, b][rel] = Relationship(rel)
+            except KeyError:
+                self._relationships[a, b] = {rel: Relationship(rel)}
         add(node_a, node_b, name)
         if both_ways:
             add(node_b, node_a, name)
@@ -241,7 +245,7 @@ class LabeledPropertyGraph:
 
     def neighbors(self, node):
         """Return all nodes node has relationship with."""
-        return [key[1] for key in self._relationships.keys() if node == key[0] ]
+        return [key[1] for key in self._relationships.keys() if node == key[0]]
 
     def adjacent(self, node_a, node_b):
         """Return whether a node has a certain neighbor."""
