@@ -164,7 +164,7 @@ class LabeledPropertyGraph:
         set of subscripts.
         """
         if isinstance(key, tuple):
-            return list(self._relationships[key].keys())
+            return self._relationships[key]
         return self._nodes[key]
 
     def __setitem__(self, key, item):
@@ -234,6 +234,10 @@ class LabeledPropertyGraph:
         add(node_a, node_b, name)
         if both_ways:
             add(node_b, node_a, name)
+
+    def get_relationships(self, node_a, node_b):
+        """Return all relationships between two nodes."""
+        return self._relationships[node_a, node_b].keys()
 
     def nodes_with_relationship(self, name):
         """Return a list of nodes with a given relationship."""
