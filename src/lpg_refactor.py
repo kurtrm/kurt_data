@@ -152,7 +152,6 @@ class LabeledPropertyGraph:
 
         _relationships contains the actual relationship objects.
         """
-        self._graph = {}
         self._nodes = {}
         self._relationships = {}
 
@@ -177,24 +176,18 @@ class LabeledPropertyGraph:
                 raise ValueError("Graph relationships must"
                                  "be of type Relationship")
             self._relationships[key][item] = Relationship(item)
-            if item not in self._graph[key[0]][key[1]]:
-                self._graph[key[0]][key[1]].append(self._relationships[key].name)
         else:
             if not isinstance(item, Node):
                 raise ValueError("Graph nodes must"
                                  "be of type Node")
             self._nodes[key] = item
-            if key not in self._graph:
-                self._graph[key] = {}
 
     def __delitem__(self, key):
         """Delete node or relationship from graph."""
         if isinstance(key, tuple):
             del self._relationships[key]
-            self._graph[key[0]][key[1]]
         else:
             del self._nodes[key]
-            del self._graph[key]
             for keys in self._relationships.keys():
                 if key in keys:
                     del self._relationships[keys]
@@ -218,7 +211,6 @@ class LabeledPropertyGraph:
         if name in self.nodes:
             raise KeyError('Node already exists in graph')
         node = Node(name)
-        self._graph[name] = {}
         self._nodes[name] = node
 
     def add_relationship(self, node_a, node_b, name, both_ways=False):
@@ -235,11 +227,6 @@ class LabeledPropertyGraph:
                 raise ValueError('{} -> {} relationship'
                                  'already exists'.format(a, b))
             self._relationships[a, b] = Relationship(rel)
-            try:
-                self._graph[a][b].append(rel)
-            except KeyError:
-                self._graph[a][b] = [rel]
-
         add(node_a, node_b, name)
         if both_ways:
             add(node_b, node_a, name)
@@ -255,3 +242,18 @@ class LabeledPropertyGraph:
     def neighbors(self, node):
         """Return all nodes node has relationship with."""
         return [key[1] for key in self._relationships.keys() if node == key[0] ]
+
+    def adjacent(self, node_a, node_b):
+        """Return whether a node has a certain neighbor."""
+        return (node_a, node_b) in self._relationships.keys()
+
+    def has_relationship(self, node_a, node_b, relationship, both_ways=False):
+        """Returns boolean if nodes have a particular relationship."""
+        try:
+            if both_ways:
+                return relationship in self._relationships[node_a, node_b] \
+                    and relationship in self._relationships[node_b, node_a]
+            else:
+                return relationship in self._relationships[node_a][node_b]
+        except KeyError:
+            raise KeyError('No relationship between nodes.')
