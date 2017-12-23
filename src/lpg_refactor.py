@@ -143,15 +143,29 @@ class LabeledPropertyGraph:
     """Define a labeled property graph as dictionary composition."""
 
     def __init__(self):
-        """Initialize the graph as a dictionary."""
+        """
+        Initialize the graph as a dictionary (well, several).
+        Right now, _graph maps the nodes and relationships. It does not
+        contain node objects.
+
+        _nodes contains the actual node objects.
+
+        _relationships contains the actual relationship objects.
+        """
         self._graph = {}
         self._nodes = {}
         self._relationships = {}
 
     def __getitem__(self, key):
-        """Return either node or relationship."""
+        """
+        Return either node or relationship, depending on what type of
+        object is passed into the subscripts. For relationships, this returns
+        a list of relationships. The user can then grab a particular
+        relationship by passing the name of the desired link into another
+        set of subscripts.
+        """
         if isinstance(key, tuple):
-            return self._relationships[key]
+            return list(self._relationships[key].keys())
         return self._nodes[key]
 
     def __setitem__(self, key, item):
@@ -162,8 +176,8 @@ class LabeledPropertyGraph:
             if not isinstance(item, Relationship):
                 raise ValueError("Graph relationships must"
                                  "be of type Relationship")
-            self._relationships[key] = item
-            if self._relationships[key].name not in self._graph[key[0]][key[1]]:
+            self._relationships[key][item] = Relationship(item)
+            if item not in self._graph[key[0]][key[1]]:
                 self._graph[key[0]][key[1]].append(self._relationships[key].name)
         else:
             if not isinstance(item, Node):
@@ -181,6 +195,9 @@ class LabeledPropertyGraph:
         else:
             del self._nodes[key]
             del self._graph[key]
+            for keys in self._relationships.keys():
+                if key in keys:
+                    del self._relationships[keys]
 
     @property
     def nodes(self):
@@ -194,7 +211,7 @@ class LabeledPropertyGraph:
 
     def unique_relationships(self):
         """Return a list of unique relationship names."""
-        return set([edge.name for edge in self._relationships.values()])
+        return set([key for link in self._relationships.values() for key in link.keys()])
 
     def add_node(self, name):
         """Add a node and pass the name to the node.name."""
@@ -227,4 +244,12 @@ class LabeledPropertyGraph:
         if both_ways:
             add(node_b, node_a, name)
 
-    # def 
+    def nodes_with_relationship(self, name):
+        """Return a list of nodes with a given relationship."""
+        nodes = []
+        for key, value in self._relationships.items():
+            if name in value:
+                nodes.append(key)
+        return nodes
+
+    
