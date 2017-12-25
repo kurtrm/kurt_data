@@ -41,7 +41,14 @@ def parse_bill(filename):
     section_dict = {}
     bill_list = []
     # import pdb; pdb.set_trace()
-    parsing_start = 3 if filename not in ['bills/Mom_and_Dad/sep17-oct17.pdf', 'bills/Mom_and_Dad/may17-jun17.pdf', 'bills/Mom_and_Dad/mar17-apr17.pdf', 'bills/Mom_and_Dad/jun17-jul17.pdf', 'bills/Mom_and_Dad/jul17-aug17.pdf', 'bills/Mom_and_Dad/feb17-mar17.pdf', 'bills/Mom_and_Dad/aug17-sep17.pdf', 'bills/Mom_and_Dad/apr17-may17.pdf'] else 4
+    parsing_start = 3 if filename not in ['bills/Mom_and_Dad/sep17-oct17.pdf',
+                                          'bills/Mom_and_Dad/may17-jun17.pdf',
+                                          'bills/Mom_and_Dad/mar17-apr17.pdf',
+                                          'bills/Mom_and_Dad/jun17-jul17.pdf',
+                                          'bills/Mom_and_Dad/jul17-aug17.pdf',
+                                          'bills/Mom_and_Dad/feb17-mar17.pdf',
+                                          'bills/Mom_and_Dad/aug17-sep17.pdf',
+                                          'bills/Mom_and_Dad/apr17-may17.pdf'] else 4
 
     for page in range(parsing_start, pdf_bill.numPages):
         prepared_page = _prepare_bill(pdf_bill, page)
@@ -51,13 +58,15 @@ def parse_bill(filename):
                                                           bill_dict,
                                                           section_dict)
             total_index = prepared_page.index('Total:')
-            if total_index + 4 < len(prepared_page) and prepared_page[total_index + 4] == 'Talk':
+            if prepared_page[34] == 'Data' and 'Total:' in prepared_page:
                 bill_list.append(bill_dict.copy())
                 bill_dict = {}
         else:
             section_dict = _parse_continuous_records(prepared_page,
                                                      section_dict)
-    bill_list.append(bill_dict)
+    if filename == 'bills/Mom_and_Dad/jul17-aug17.pdf':
+        # import pdb; pdb.set_trace()
+    # bill_list.append(bill_dict)
     return bill_list
 
 
