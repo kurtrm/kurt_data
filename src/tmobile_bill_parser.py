@@ -50,14 +50,14 @@ def parse_bill(filename):
                                                           bill_dict,
                                                           section_dict)
             total_index = prepared_page.index('Total:')
-            if prepared_page[total_index + 4] == 'Talk':
+            if total_index + 4 < len(prepared_page) and prepared_page[total_index + 4] == 'Talk':
                 bill_list.append(bill_dict.copy())
-                bill_list = {}
+                bill_dict = {}
         else:
             section_dict = _parse_continuous_records(prepared_page,
                                                      section_dict)
-
-    return bill_dict
+    bill_list.append(bill_dict)
+    return bill_list
 
 
 def parse_multiple_bills(directory):
@@ -104,9 +104,10 @@ def _parse_discontinuous_records(prepared_page, bill_dict, section_dict):
             tail_dict[column] = prepared_page[column_index + columns:end:columns]
         bill_dict[section_label] = {key: section_dict.get(key, []) + tail_dict[key]
                                     for key in tail_dict.keys()}
+        # import pdb; pdb.set_trace()
         if prepared_page[end + 2] == 'Data':
             start_section = end + 4
-        elif prepared_page[end + 4] == 'Talk':
+        elif end + 4 < len(prepared_page) and prepared_page[end + 4] == 'Talk':
             start_section = end + 6
         else:
             start_section = end + 5
