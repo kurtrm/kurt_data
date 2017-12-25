@@ -39,6 +39,7 @@ def parse_bill(filename):
     pdf_bill = PyPDF2.PdfFileReader(open(filename, 'rb'))
     bill_dict = {}
     section_dict = {}
+    bill_list = []
     parsing_start = 3
 
     for page in range(parsing_start, pdf_bill.numPages):
@@ -48,6 +49,10 @@ def parse_bill(filename):
              section_dict) = _parse_discontinuous_records(prepared_page,
                                                           bill_dict,
                                                           section_dict)
+            total_index = prepared_page.index('Total:')
+            if prepared_page[total_index + 4] == 'Talk':
+                bill_list.append(bill_dict.copy())
+                bill_list = {}
         else:
             section_dict = _parse_continuous_records(prepared_page,
                                                      section_dict)
@@ -101,6 +106,8 @@ def _parse_discontinuous_records(prepared_page, bill_dict, section_dict):
                                     for key in tail_dict.keys()}
         if prepared_page[end + 2] == 'Data':
             start_section = end + 4
+        elif prepared_page[end + 4] == 'Talk':
+            start_section = end + 6
         else:
             start_section = end + 5
         if 'Total:' in prepared_page[start_section:]:
