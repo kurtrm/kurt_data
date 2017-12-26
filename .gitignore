@@ -107,3 +107,4 @@ bills/*
 tests/text_docs.p
 *.vcf
 *.json
+!docs/mega_phone_graph.json
