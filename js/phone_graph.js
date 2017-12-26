@@ -1,7 +1,7 @@
 'use strict';
 
-var width = 960,
-    height = 500
+var width = 1500,
+    height = 1200
 
 var svg = d3.select("body").append("svg")
     .attr("width", width)
