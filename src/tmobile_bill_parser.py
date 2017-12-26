@@ -40,14 +40,14 @@ def parse_bill(filename):
     bill_dict = {}
     section_dict = {}
     bill_list = []
-    parsing_start = 3 if filename not in ['bills/Mom_and_Dad/sep17-oct17.pdf',
-                                          'bills/Mom_and_Dad/may17-jun17.pdf',
-                                          'bills/Mom_and_Dad/mar17-apr17.pdf',
-                                          'bills/Mom_and_Dad/jun17-jul17.pdf',
-                                          'bills/Mom_and_Dad/jul17-aug17.pdf',
-                                          'bills/Mom_and_Dad/feb17-mar17.pdf',
-                                          'bills/Mom_and_Dad/aug17-sep17.pdf',
-                                          'bills/Mom_and_Dad/apr17-may17.pdf'] else 4
+    parsing_start = 3 if filename not in ['../bills/Mom_and_Dad/sep17-oct17.pdf',
+                                          '../bills/Mom_and_Dad/may17-jun17.pdf',
+                                          '../bills/Mom_and_Dad/mar17-apr17.pdf',
+                                          '../bills/Mom_and_Dad/jun17-jul17.pdf',
+                                          '../bills/Mom_and_Dad/jul17-aug17.pdf',
+                                          '../bills/Mom_and_Dad/feb17-mar17.pdf',
+                                          '../bills/Mom_and_Dad/aug17-sep17.pdf',
+                                          '../bills/Mom_and_Dad/apr17-may17.pdf'] else 4
 
     for page in range(parsing_start, pdf_bill.numPages):
         prepared_page = _prepare_bill(pdf_bill, page)
@@ -118,6 +118,8 @@ def _parse_discontinuous_records(prepared_page, bill_dict, section_dict):
         if 'Total:' in prepared_page[start_section:]:
             start = start_section
             end = prepared_page.index('Total:', start_section)
+            section_dict = {}
+            # import pdb; pdb.set_trace()
             continue
         next_section = prepared_page[start_section:]
         section_dict = {}
@@ -130,6 +132,7 @@ def _parse_discontinuous_records(prepared_page, bill_dict, section_dict):
 
 def _parse_continuous_records(prepared_page, section_dict):
     """Handle parsing a continuous list of records."""
+    # import pdb; pdb.set_trace()
     columns = 6
     start = prepared_page.index('Date and time')
     for i, column in enumerate(prepared_page[start:start + columns]):
