@@ -13,14 +13,16 @@ I have to determine which data I care about, pull it, and look at it. More to co
 Graph databases are growing in popularity. While searching for possible sources of personal information, I discovered my cell phone bill provides a fairly comprehensive and detailed source of calls, text, and data usage.
 I also realized that this is a perfect candidate source to both visualize and store in a graph data structure.
 
+I've managed to produce a visualization of this network graph using d3.js. You can see it [here](https://kurtrm.github.io/kurt_data/).
+
 My goals are to:
 
-- [x] Parse each bill to retrieve the data. (Still requires testing.)
+- [x] Parse each bill to retrieve the data.
 - [x] Plug the data into a DataFrame.
 - [x] Analyze which columns need to be discarded and which are useful.
 - [x] Research existing graph implementations and databases.
-- [ ] Determine perspectives on the data and how to present each layer.
-- [ ] Refactor the graph to incorporate more advanced Pythonic tools.
+- [x] Determine perspectives on the data and how to present each layer.
+- [x] Refactor the graph to incorporate more advanced Pythonic tools.
 - [ ] Refactor to make anything that generates a list make a generator instead.
 
 To do:
