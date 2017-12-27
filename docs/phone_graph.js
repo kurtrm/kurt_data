@@ -1,7 +1,7 @@
 'use strict';
 
-var width = 1500,
-    height = 1200
+var width = 960,
+    height = 540
 
 var svg = d3.select("body").append("svg")
     .attr("width", width)
@@ -18,7 +18,8 @@ var link = svg.append("g")
     .selectAll("line")
     .data(mega_phone_graph.links.Text.concat(mega_phone_graph.links.Talk))
     .enter().append("line")
-        .attr("stroke", "grey");
+        .attr("stroke", "grey")
+        .attr("stroke-width", .1);
 
 var node = svg.append("g")
     .attr("class", "nodes")
@@ -42,7 +43,7 @@ var node = svg.append("g")
 var simulation = d3.forceSimulation()
     .force("link", d3.forceLink().id(function(d){return d.id;}))
     .force("charge", d3.forceManyBody()
-                            .strength(-30))
+                            .strength(forcesStrength))
     .force("center", d3.forceCenter(width / 2, height / 2));
 
 
@@ -50,7 +51,7 @@ var label = svg.selectAll('.names')
         .data(mega_phone_graph.nodes)
         .enter()
         .append("text")
-            .text(function(d){ return d.id; })
+            .text(colored)
             .style("text-anchor", "start")
             .style("fill", "#555")
             .style("font-family", "Arial")
@@ -74,6 +75,20 @@ simulation
 simulation.force("link")
     .links(mega_phone_graph.links.Text.concat(mega_phone_graph.links.Talk))
     .distance(function(d){return d.value;});
+
+function colored(d){
+    if (d.color === "green" || d.color === "blue") {
+        return d.id;
+    };
+}
+
+function forcesStrength(d) {
+    if (d.color === "grey") {
+        return -3;
+    } else {
+        return -15;
+    };
+}
 
 function ticked() {
     link
