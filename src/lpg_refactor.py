@@ -189,7 +189,7 @@ class LabeledPropertyGraph:
                 del self._relationships[key]
             else:
                 del self._nodes[key]
-                for keys in self._relationships.keys():
+                for keys in list(self._relationships.keys()):
                     if key in keys:
                         del self._relationships[keys]
         except KeyError as error:

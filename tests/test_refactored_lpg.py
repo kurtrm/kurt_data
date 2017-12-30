@@ -21,8 +21,8 @@ def loaded_lpg():
     lpg.add_node('Charlie')
     lpg.add_node('Unicorn')
     lpg.add_node('Pegasus')
-    lpg.add_relationship('buddies', 'Charlie', 'Unicorn', both_ways=True)
-    lpg.add_relationship('cousins', 'Charlie', 'Unicorn')
+    lpg.add_relationship('Charlie', 'Unicorn', 'buddies', both_ways=True)
+    lpg.add_relationship('Charlie', 'Unicorn', 'cousins')
 
     return lpg
 
@@ -105,18 +105,18 @@ def test_removing_node_from_empty(lpg):
         del lpg['Kurt']
 
 
-# def test_removing_nodes_with_many_connections(loaded_lpg):
-#     """Ensure relationships to deleted node are cleared."""
-#     loaded_lpg.add_node('Isolated')
-#     loaded_lpg.add_node('Wendy')
-#     for node in ['Charlie', 'Unicorn', 'Pegasus']:
-#         loaded_lpg.add_relationship('friends', 'Wendy', node)
-#     for rel, node in zip(['boss', 'parent', 'administrator'],
-#                          ['Charlie', 'Unicorn', 'Pegasus']):
-#         loaded_lpg.add_relationship(rel, node, 'Wendy')
-#     loaded_lpg.remove_node('Wendy')
-#     for rel in loaded_lpg._relationships:
-#         assert 'Wendy' not in loaded_lpg._relationships[rel]
+def test_removing_nodes_with_many_connections(loaded_lpg):
+    """Ensure relationships to deleted node are cleared."""
+    loaded_lpg.add_node('Isolated')
+    loaded_lpg.add_node('Wendy')
+    for node in ['Charlie', 'Unicorn', 'Pegasus']:
+        loaded_lpg.add_relationship('Wendy', node, 'friends')
+    for rel, node in zip(['boss', 'parent', 'administrator'],
+                         ['Charlie', 'Unicorn', 'Pegasus']):
+        loaded_lpg.add_relationship(node, 'Wendy', rel)
+    del loaded_lpg['Wendy']
+    for rel in loaded_lpg._relationships:
+        assert 'Wendy' not in loaded_lpg._relationships[rel]
 
 
 # def test_get_neighbors(loaded_lpg):
