@@ -8,7 +8,7 @@ import random
 @pytest.fixture
 def lpg():
     """Fixture of labeled property graph(lpg) for testing."""
-    from ..src.labeled_property_graph import LabeledPropertyGraph
+    from ..src.lpg_refactor import LabeledPropertyGraph
     lpg = LabeledPropertyGraph()
     return lpg
 
@@ -16,7 +16,7 @@ def lpg():
 @pytest.fixture
 def loaded_lpg():
     """Fixture of a loaded lpg."""
-    from ..src.labeled_property_graph import LabeledPropertyGraph
+    from ..src.lpg_refactor import LabeledPropertyGraph
     lpg = LabeledPropertyGraph()
     lpg.add_node('Charlie')
     lpg.add_node('Unicorn')
@@ -30,7 +30,7 @@ def loaded_lpg():
 @pytest.fixture
 def big_lpg():
     """Lpg that's big and nasty."""
-    from ..src.labeled_property_graph import LabeledPropertyGraph
+    from ..src.lpg_refactor import LabeledPropertyGraph
     lpg = LabeledPropertyGraph()
     faker = Faker()
     phone_nums = list(set([faker.phone_number() for _ in range(100)]))
@@ -65,7 +65,7 @@ def test_empty_lpg_relationships(lpg):
 def test_adding_node(lpg):
     """Ensure we can successfully add nodes to lpg."""
     lpg.add_node('Kurt')
-    assert lpg.nodes() == ['Kurt']
+    assert lpg.nodes == ['Kurt']
 
 
 def test_adding_lots_of_nodes(lpg):
