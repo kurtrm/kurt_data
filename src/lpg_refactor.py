@@ -184,13 +184,17 @@ class LabeledPropertyGraph:
 
     def __delitem__(self, key):
         """Delete node or relationship from graph."""
-        if isinstance(key, tuple):
-            del self._relationships[key]
-        else:
-            del self._nodes[key]
-            for keys in self._relationships.keys():
-                if key in keys:
-                    del self._relationships[keys]
+        try:
+            if isinstance(key, tuple):
+                del self._relationships[key]
+            else:
+                del self._nodes[key]
+                for keys in list(self._relationships.keys()):
+                    if key in keys:
+                        del self._relationships[keys]
+        except KeyError as error:
+            err = "Relationship" if isinstance(error.args[0], tuple) else "Node"
+            raise KeyError("{} {} not in graph".format(err, error.args[0]))
 
     @property
     def nodes(self):
