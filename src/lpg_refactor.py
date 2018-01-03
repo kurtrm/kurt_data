@@ -42,7 +42,10 @@ class Node:
 
     def __delitem__(self, key):
         """Remove a property from the node."""
-        del self._properties[key]
+        try:
+            del self._properties[key]
+        except KeyError:
+            raise KeyError("Node '{}' does not have property {}".format(self.name, key))
 
     def add_label(self, label):
         """Adds a label to the node."""

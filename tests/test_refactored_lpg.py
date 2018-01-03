@@ -178,25 +178,11 @@ def test_rm_node_properties(loaded_lpg):
     assert not loaded_lpg._nodes['Charlie']._properties.get('kidneys')
 
 
-# def test_error_when_adding_duplicates(loaded_lpg):
-#     """Test that we raise the appropriate error."""
-#     loaded_lpg.add_node_props('Charlie', kidneys=1)
-#     with pytest.raises(KeyError):
-#         loaded_lpg.add_node_props('Charlie', kidneys=1)
-
-
-# def test_change_node_prop_DNE(loaded_lpg):
-#     """Test that we get error if we try to change a property that DNE."""
-#     loaded_lpg.add_node_props('Charlie', kidneys=1)
-#     with pytest.raises(AttributeError):
-#         loaded_lpg.change_node_prop('Charlie', 'horn', 1)
-
-
-# def test_remove_node_DNE_prop(loaded_lpg):
-#     """Test that we raise an error if removing DNE prop."""
-#     loaded_lpg.add_node_props('Charlie', kidneys=1)
-#     with pytest.raises(AttributeError):
-#         loaded_lpg.remove_node_prop('Charlie', 'kids')
+def test_remove_node_DNE_prop(loaded_lpg):
+    """Test that we raise an error if removing DNE prop."""
+    loaded_lpg['Charlie']['kidneys'] = 1
+    with pytest.raises(KeyError):
+        del loaded_lpg['Charlie']['kids']
 
 
 # def test_node_repr(loaded_lpg):
