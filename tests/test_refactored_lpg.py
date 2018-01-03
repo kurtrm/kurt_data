@@ -119,50 +119,63 @@ def test_removing_nodes_with_many_connections(loaded_lpg):
         assert 'Wendy' not in loaded_lpg._relationships[rel]
 
 
-# def test_get_neighbors(loaded_lpg):
-#     """Test get_neighbors method."""
-#     loaded_lpg.add_node('Wendy')
-#     loaded_lpg.add_node('Teddy')
-#     for node in loaded_lpg.nodes:
-#         if node != 'Wendy':
-#             loaded_lpg.add_relationship('buddy', 'Wendy', node)
-#     assert loaded_lpg.get_neighbors('Wendy') == list(loaded_lpg._graph['Wendy']
-#                                                      .keys())
+def test_get_neighbors(loaded_lpg):
+    """Test get_neighbors method."""
+    loaded_lpg.add_node('Wendy')
+    loaded_lpg.add_node('Teddy')
+    for node in loaded_lpg.nodes:
+        if node != 'Wendy':
+            loaded_lpg.add_relationship('Wendy', node, 'buddy')
+    all_nodes = set(loaded_lpg.nodes)
+    all_nodes.remove('Wendy')
+    assert set(loaded_lpg.neighbors('Wendy')) == all_nodes
 
 
-# def test_is_neighbors_to(loaded_lpg):
-#     """Test returns correct neighbors."""
-#     loaded_lpg.add_node('Wendy')
-#     loaded_lpg.add_node('Teddy')
-#     for node in loaded_lpg.nodes:
-#         if node != 'Wendy':
-#             loaded_lpg.add_relationship('buddy', node, 'Wendy')
-#     assert sorted(loaded_lpg.is_neighbor_to('Wendy')) == sorted(['Teddy',
-#                                                                  'Pegasus',
-#                                                                 'Charlie',
-#                                                                  'Unicorn'])
+def test_adjacency(loaded_lpg):
+    """Test returns correct neighbors."""
+    loaded_lpg.add_node('Wendy')
+    loaded_lpg.add_node('Teddy')
+    for node in loaded_lpg.nodes:
+        if node != 'Wendy':
+            loaded_lpg.add_relationship(node, 'Wendy', 'buddy')
+    assert all([loaded_lpg.adjacent('Teddy', 'Wendy'),
+               loaded_lpg.adjacent('Charlie', 'Wendy'),
+               loaded_lpg.adjacent('Unicorn', 'Wendy'),
+               loaded_lpg.adjacent('Pegasus', 'Wendy')])
 
 
-# def test_add_node_properties(loaded_lpg):
-#     """Test that we can add node properties."""
-#     loaded_lpg.add_node_props('Charlie', kidneys=1)
-#     assert loaded_lpg._nodes['Charlie'].properties['kidneys'] == 1
+def test_add_node_properties(loaded_lpg):
+    """Test that we can add node properties."""
+    loaded_lpg['Charlie']['kidneys'] = 1
+    assert loaded_lpg._nodes['Charlie']._properties == {'kidneys': 1}
 
 
-# def test_change_node_properties(loaded_lpg):
-#     """Test that we can add node properties."""
-#     loaded_lpg.add_node_props('Charlie', kidneys=1)
-#     assert loaded_lpg._nodes['Charlie'].properties['kidneys'] == 1
-#     loaded_lpg.change_node_prop('Charlie', 'kidneys', 0)
-#     assert loaded_lpg._nodes['Charlie'].properties['kidneys'] == 0
+def test_get_node_properties(loaded_lpg):
+    """Verify getitem is working correctly."""
+    loaded_lpg['Charlie']['kidneys'] = 1
+    loaded_lpg['Pegasus']['horns'] = 1
+    assert all([loaded_lpg['Pegasus']['horns'] == 1,
+                loaded_lpg['Charlie']['kidneys'] ==1])
 
 
-# def test_rm_node_properties(loaded_lpg):
-#     """Test that we can add node properties."""
-#     loaded_lpg.add_node_props('Charlie', kidneys=1)
-#     assert loaded_lpg._nodes['Charlie'].properties['kidneys'] == 1
-#     loaded_lpg.remove_node_prop('Charlie', 'kidneys')
-#     assert not loaded_lpg._nodes['Charlie'].properties.get('kidneys')
+def test_change_node_properties(loaded_lpg):
+    """Test that we can add node properties."""
+    loaded_lpg['Charlie']['kidneys'] = 2
+    loaded_lpg['Pegasus']['horns'] = 1
+    assert all([loaded_lpg['Pegasus']['horns'] == 1,
+                loaded_lpg['Charlie']['kidneys'] ==2])    
+    loaded_lpg['Charlie']['kidneys'] = 1
+    loaded_lpg['Pegasus']['horns'] = 0
+    assert all([loaded_lpg['Pegasus']['horns'] == 0,
+                loaded_lpg['Charlie']['kidneys'] == 1])
+
+
+def test_rm_node_properties(loaded_lpg):
+    """Test that we can add node properties."""
+    loaded_lpg['Charlie']['kidneys'] = 1
+    assert loaded_lpg._nodes['Charlie']['kidneys'] == 1
+    del loaded_lpg['Charlie']['kidneys']
+    assert not loaded_lpg._nodes['Charlie']._properties.get('kidneys')
 
 
 # def test_error_when_adding_duplicates(loaded_lpg):
