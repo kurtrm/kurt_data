@@ -29,9 +29,11 @@ To do:
 
 - ~~Stick to one type for each node. Right now you change between a string and a list, which clutters the code.~~
 - ~~Define __repr__ for relationship and node classes.~~
-- Determine useful attributes that can be placed on these nodes besides their properties.
-- Implement a CLI.
-- Refactor tables as described in notebook.
+- ~~Determine useful attributes that can be placed on these nodes besides their properties.~~
+- ~~Refactor tables as described in notebook.~~
+- Finish refactoring tests for most recent version.
+- Update README and all module, function, and class docstrings to be comprehensive and actually useful to the user.
+- Improve the appearance of the d3 graph.
 - Put it into an existing graph database.
 - ~~Make various visualizations using Matplotlib, networkx (See notebook for more information.)~~ D3.js
 
