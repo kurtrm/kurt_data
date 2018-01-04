@@ -300,8 +300,8 @@ def test_adding_another_rel_between_nodes(lpg):
     lpg.add_node('Pegasus')
     lpg.add_relationship('Charlie', 'Unicorn', 'buddies', both_ways=True)
     lpg.add_relationship('Charlie', 'Unicorn', 'cousins')
-    assert list(lpg['Charlie', 'Unicorn'].keys()) == \
-        ['buddies', 'cousins']
+    assert sorted(list(lpg['Charlie', 'Unicorn'].keys())) == \
+        sorted(['buddies', 'cousins'])
 
 
 def test_removing_rel(loaded_lpg):
