@@ -176,12 +176,12 @@ class LabeledPropertyGraph:
            create new relationship, not node."""
         if isinstance(key, tuple):
             if not isinstance(item, Relationship):
-                raise ValueError("Graph relationships must"
+                raise ValueError("Graph relationships must "
                                  "be of type Relationship")
             self._relationships[key][item] = Relationship(item)
         else:
             if not isinstance(item, Node):
-                raise ValueError("Graph nodes must"
+                raise ValueError("Graph nodes must "
                                  "be of type Node")
             self._nodes[key] = item
 
@@ -244,15 +244,16 @@ class LabeledPropertyGraph:
 
     def get_relationships(self, node_a, node_b):
         """Return all relationships between two nodes."""
-        return self._relationships[node_a, node_b].keys()
+        return list(self._relationships[node_a, node_b].keys())
 
     def nodes_with_relationship(self, name):
         """Return a list of nodes with a given relationship."""
-        nodes = []
+        nodes = set()
         for key, value in self._relationships.items():
             if name in value:
-                nodes.append(key)
-        return nodes
+                nodes.add(key[0])
+                nodes.add(key[1])
+        return list(nodes)
 
     def neighbors(self, node):
         """Return all nodes node has relationship with."""
@@ -264,11 +265,8 @@ class LabeledPropertyGraph:
 
     def has_relationship(self, node_a, node_b, relationship, both_ways=False):
         """Returns boolean if nodes have a particular relationship."""
-        try:
-            if both_ways:
-                return relationship in self._relationships[node_a, node_b] \
-                    and relationship in self._relationships[node_b, node_a]
-            else:
-                return relationship in self._relationships[node_a][node_b]
-        except KeyError:
-            raise KeyError('No relationship between nodes.')
+        if both_ways:
+            return relationship in self._relationships[node_a, node_b] \
+                and relationship in self._relationships[node_b, node_a]
+        else:
+            return relationship in self._relationships[node_a, node_b]
