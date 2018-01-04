@@ -187,29 +187,21 @@ def test_remove_node_DNE_prop(loaded_lpg):
 
 # def test_node_repr(loaded_lpg):
 #     """Test that we get the expected string when 'calling' the class."""
-#     loaded_lpg.add_node_props('Charlie', kidneys=1)
-#     assert repr(loaded_lpg._nodes['Charlie']) == "Name: Charlie\nProperties:\rkidneys: 1"
+#     props = """
+# -----------
+# Name: Charlie
+# -----------
+# Properties (key: value)
+# kidneys: 1
+
+# Labels: 
 
 
-# def test_get_node_props(loaded_lpg):
-#     """Test getting node properties."""
-#     loaded_lpg.add_node_props('Charlie', kidneys=1)
-#     assert loaded_lpg.get_node_properties('Charlie') == {'kidneys': 1}
+# """
 
+#     loaded_lpg['Charlie']['kidneys'] = 1
+#     assert str(loaded_lpg._nodes['Charlie']) == props
 
-# def test_has_neighbor_true(loaded_lpg):
-#     """Test has_neighbor method."""
-#     assert loaded_lpg.has_neighbor('Charlie', 'Unicorn')
-
-
-# def test_has_neighbor_false(loaded_lpg):
-#     """Test has neighbor method false."""
-#     assert not loaded_lpg.has_neighbor('Charlie', 'Pegasus')
-
-# def test_has_neighbor_exception(loaded_lpg):
-#     """Test exception is raised if node not there."""
-#     with pytest.raises(KeyError):
-#         loaded_lpg.has_neighbor('Cheeky', 'Charlie')
 
 # # ================== Relationsihps ================
 
