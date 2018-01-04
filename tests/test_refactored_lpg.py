@@ -217,26 +217,13 @@ def test_adding_rel_success(lpg):
 
 
 def test_adding_rel_success_view(lpg):
-    """Ensure we can see the relationship as a key in the dict."""
+    """Ensure we can see the relationship."""
     lpg.add_node('Kurt')
     lpg.add_node('Meliss')
-    lpg.add_relationship('rel', 'Kurt', 'Meliss')
-    assert (lpg._graph['Kurt'],
-            lpg._relationships['rel']['Kurt']['Meliss'].name) == \
-        ({'Meliss': ['rel']}, 'rel')
-
-
-# def test_adding_rel_with_other_rels(lpg):
-#     """Ensure we can add to a list of rels in _graph."""
-#     lpg.add_node('Kurt')
-#     lpg.add_node('Meliss')
-#     lpg.add_node('Mom')
-#     lpg.add_relationship('rel', 'Kurt', 'Meliss')
-#     lpg.add_relationship('rel', 'Kurt', 'Mom')
-#     graph_key = lpg._graph['Kurt']
-#     rel_node = lpg._relationships['rel']['Kurt']['Meliss']
-#     assert (graph_key,
-#             rel_node.name) == ({'Meliss': ['rel'], 'Mom': ['rel']}, 'rel')
+    lpg.add_relationship('Kurt', 'Meliss', 'rel')
+    assert (list(lpg.get_relationships('Kurt', 'Meliss')),
+            lpg['Kurt', 'Meliss']['rel'].name) == \
+        (['rel'], 'rel')
 
 
 # def test_adding_existent_rel(lpg):
