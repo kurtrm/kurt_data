@@ -155,7 +155,14 @@ def test_get_node_properties(loaded_lpg):
     loaded_lpg['Charlie']['kidneys'] = 1
     loaded_lpg['Pegasus']['horns'] = 1
     assert all([loaded_lpg['Pegasus']['horns'] == 1,
-                loaded_lpg['Charlie']['kidneys'] ==1])
+                loaded_lpg['Charlie']['kidneys'] == 1])
+
+
+def test_get_node_properties_method(loaded_lpg):
+    """Verify properties method is working correctly."""
+    loaded_lpg['Charlie']['kidneys'] = 1
+    loaded_lpg['Charlie']['horns'] = 1
+    assert loaded_lpg['Charlie'].properties == ['kidneys', 'horns']
 
 
 def test_change_node_properties(loaded_lpg):
@@ -163,7 +170,7 @@ def test_change_node_properties(loaded_lpg):
     loaded_lpg['Charlie']['kidneys'] = 2
     loaded_lpg['Pegasus']['horns'] = 1
     assert all([loaded_lpg['Pegasus']['horns'] == 1,
-                loaded_lpg['Charlie']['kidneys'] ==2])    
+                loaded_lpg['Charlie']['kidneys'] == 2])
     loaded_lpg['Charlie']['kidneys'] = 1
     loaded_lpg['Pegasus']['horns'] = 0
     assert all([loaded_lpg['Pegasus']['horns'] == 0,
@@ -203,7 +210,6 @@ def test_remove_label_node(loaded_lpg):
     loaded_lpg['Charlie'].add_label('fantastic')
     loaded_lpg['Charlie'].remove_label('fantastic')
     assert loaded_lpg['Charlie'].labels == []
-
 
 
 # # ================== Relationsihps ================
@@ -304,6 +310,17 @@ def test_removing_rel(loaded_lpg):
     assert list(loaded_lpg['Charlie', 'Unicorn'].keys()) == ['buddies']
 
 
+def test_removing_all_rels_between_nodes(loaded_lpg):
+    """Ensure all relationships are removed."""
+    del loaded_lpg['Charlie', 'Unicorn']
+    assert loaded_lpg._relationships.get(('Charlie', 'Unicorn')) is None
+
+
+def test_getting_all_rels_in_graph(loaded_lpg):
+    """Ensure we get a list of all rels."""
+    assert loaded_lpg.relationships == ['buddies', 'cousins']
+
+
 def test_removing_rel_single(loaded_lpg):
     """Ensure relationships can be removed."""
     del loaded_lpg['Charlie', 'Unicorn']['cousins']
@@ -345,6 +362,27 @@ def test_get_rel_props(loaded_lpg):
     loaded_lpg['Charlie', 'Unicorn']['buddies']['since'] = 1985
     assert loaded_lpg['Charlie', 'Unicorn']['buddies']._properties == \
         {'since': 1985}
+
+
+def test_add_label_relationship(loaded_lpg):
+    """Test that we successfully add labels to a node."""
+    loaded_lpg['Charlie', 'Unicorn']['buddies'].add_label('fantastic')
+    assert loaded_lpg['Charlie', 'Unicorn']['buddies'].labels == ['fantastic']
+
+
+def test_add_label_relationship_error(loaded_lpg):
+    """Test that we successfully add labels to a node."""
+    loaded_lpg['Charlie', 'Unicorn']['buddies'].add_label('fantastic')
+    with pytest.raises(ValueError):
+        loaded_lpg['Charlie', 'Unicorn']['buddies'].add_label('fantastic')
+
+
+def test_remove_label_relationship(loaded_lpg):
+    """Test that labels are removed appropriately."""
+    loaded_lpg['Charlie', 'Unicorn']['buddies'].add_label('fantastic')
+    loaded_lpg['Charlie', 'Unicorn']['buddies'].remove_label('fantastic')
+    assert loaded_lpg['Charlie', 'Unicorn']['buddies'].labels == []
+
 
 # # ====================== RETRIEVAL =============================
 

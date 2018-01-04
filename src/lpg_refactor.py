@@ -170,20 +170,20 @@ class LabeledPropertyGraph:
             return self._relationships[key]
         return self._nodes[key]
 
-    def __setitem__(self, key, item):
-        """Modify or create new nodes or relationships.
-           Warning: passing a tuple into the subscript will
-           create new relationship, not node."""
-        if isinstance(key, tuple):
-            if not isinstance(item, Relationship):
-                raise ValueError("Graph relationships must "
-                                 "be of type Relationship")
-            self._relationships[key][item] = Relationship(item)
-        else:
-            if not isinstance(item, Node):
-                raise ValueError("Graph nodes must "
-                                 "be of type Node")
-            self._nodes[key] = item
+    # def __setitem__(self, key, item):
+    #     """Modify or create new nodes or relationships.
+    #        Warning: passing a tuple into the subscript will
+    #        create new relationship, not node."""
+    #     if isinstance(key, tuple):
+    #         if not isinstance(item, Relationship):
+    #             raise ValueError("Graph relationships must "
+    #                              "be of type Relationship")
+    #         self._relationships[key][item] = Relationship(item)
+    #     else:
+    #         if not isinstance(item, Node):
+    #             raise ValueError("Graph nodes must "
+    #                              "be of type Node")
+    #         self._nodes[key] = item
 
     def __delitem__(self, key):
         """Delete node or relationship from graph."""
@@ -207,7 +207,12 @@ class LabeledPropertyGraph:
     @property
     def relationships(self):
         """Return list of unique relationships."""
-        return [edge for edge in self._relationships.keys()]
+        edges = []
+        for edge in self._relationships.values():
+            for key in edge.keys():
+                if key not in edges:
+                    edges.append(key)
+        return edges
 
     def unique_relationships(self):
         """Return a list of unique relationship names."""
@@ -269,4 +274,4 @@ class LabeledPropertyGraph:
             return relationship in self._relationships[node_a, node_b] \
                 and relationship in self._relationships[node_b, node_a]
         else:
-            return relationship in self._relationships[node_a, node_b]
+            return relationship in self._relationships[node_a,  node_b]
