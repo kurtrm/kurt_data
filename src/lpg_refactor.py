@@ -62,7 +62,7 @@ class Node:
         """Return the keys in self._properties."""
         return list(self._properties.keys())
 
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         """Show the properties of the node."""
         props = """
 -----------
@@ -77,7 +77,7 @@ Properties (key: value)
         props += '\r\n\r\n'
         return props
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         """Return the same thing as repr."""
         return "<[{}] class Node {} Labels {} Properties>".format(self.name,
                                                                   len(self.labels),
@@ -120,7 +120,7 @@ class Relationship:
         """Return the keys in self._properties."""
         return list(self._properties.keys())
 
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         """Show the properties of the node."""
         props = """
 -----------
@@ -135,7 +135,7 @@ Properties (key: value)
         props += '\r\n\r\n'
         return props
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         """Return the same thing as repr."""
         return "<[{}] Relationship {} Labels {} Properties>".format(self.name,
                                                                     len(self.labels),

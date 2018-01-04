@@ -185,63 +185,45 @@ def test_remove_node_DNE_prop(loaded_lpg):
         del loaded_lpg['Charlie']['kids']
 
 
-# def test_node_repr(loaded_lpg):
-#     """Test that we get the expected string when 'calling' the class."""
-#     props = """
-# -----------
-# Name: Charlie
-# -----------
-# Properties (key: value)
-# kidneys: 1
-
-# Labels: 
-
-
-# """
-
-#     loaded_lpg['Charlie']['kidneys'] = 1
-#     assert str(loaded_lpg._nodes['Charlie']) == props
-
-
 # # ================== Relationsihps ================
 
 
-# def test_adding_rel_to_empty_lpg(lpg):
-#     """Ensure we can't add relationships between nonexistent nodes."""
-#     with pytest.raises(KeyError):
-#         lpg.add_relationship('durka', 'Will', 'Bill')
+def test_adding_rel_to_empty_lpg(lpg):
+    """Ensure we can't add relationships between nonexistent nodes."""
+    with pytest.raises(KeyError):
+        lpg.add_relationship('Will', 'Bill', 'durka')
 
 
-# def test_adding_rel_one_node_dne(lpg):
-#     """Ensure we can add relationships between existent and non-existent."""
-#     lpg.add_node('Kurt')
-#     with pytest.raises(KeyError):
-#         lpg.add_relationship('durka', 'Kurt', 'Bill')
+def test_adding_rel_one_node_dne(lpg):
+    """Ensure we can add relationships between existent and non-existent."""
+    lpg.add_node('Kurt')
+    with pytest.raises(KeyError):
+        lpg.add_relationship('Kurt', 'Bill', 'durka')
 
 
-# def test_adding_rel_other_dne(lpg):
-#     """Ensure second parameter works as well."""
-#     lpg.add_node('Billy')
-#     with pytest.raises(KeyError):
-#         lpg.add_relationship('durka', 'Kurt', 'Billy')
+def test_adding_rel_other_dne(lpg):
+    """Ensure second parameter works as well."""
+    lpg.add_node('Billy')
+    with pytest.raises(KeyError):
+        lpg.add_relationship('Kurt', 'Billy', 'durka')
 
 
-# def test_adding_rel_success(lpg):
-#     """Ensure successful of adding a relationship."""
-#     lpg.add_node('Kurt')
-#     lpg.add_node('Meliss')
-#     lpg.add_relationship('rel', 'Kurt', 'Meliss')
-#     assert lpg.unique_relationships() == ['rel']
+def test_adding_rel_success(lpg):
+    """Ensure successful of adding a relationship."""
+    lpg.add_node('Kurt')
+    lpg.add_node('Meliss')
+    lpg.add_relationship('Kurt', 'Meliss', 'rel')
+    assert lpg.unique_relationships() == {'rel'}
 
 
-# def test_adding_rel_success_view(lpg):
-#     """Ensure we can see the relationship as a key in the dict."""
-#     lpg.add_node('Kurt')
-#     lpg.add_node('Meliss')
-#     lpg.add_relationship('rel', 'Kurt', 'Meliss')
-#     assert (lpg._graph['Kurt'],
-#             lpg._relationships['rel']['Kurt']['Meliss'].name) == \
-#         ({'Meliss': ['rel']}, 'rel')
+def test_adding_rel_success_view(lpg):
+    """Ensure we can see the relationship as a key in the dict."""
+    lpg.add_node('Kurt')
+    lpg.add_node('Meliss')
+    lpg.add_relationship('rel', 'Kurt', 'Meliss')
+    assert (lpg._graph['Kurt'],
+            lpg._relationships['rel']['Kurt']['Meliss'].name) == \
+        ({'Meliss': ['rel']}, 'rel')
 
 
 # def test_adding_rel_with_other_rels(lpg):
