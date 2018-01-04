@@ -1,12 +1,12 @@
 [run]
 source = 
     src/lpg_refactor.py
+    src/labeled_property_graph.py
 omit = 
     src/__init__.py
     src/gather_keys_oauth2.py
     src/fitbit_data.py
     src/tmobile_bill_parser.py
     src/lpg_cli.py
-    src/labeled_property_graph.py
 [report]
 show_missing = False

@@ -12,6 +12,6 @@ install:
   - pip install python-coveralls
 # command to run tests
 script: 
-  - py.test tests/test_labeled_property_graph.py --cov=src
+  - py.test tests/test_labeled_property_graph.py tests/test_refactored_lpg.py --cov=src
 after_success:
   - coveralls
