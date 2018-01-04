@@ -155,7 +155,14 @@ def test_get_node_properties(loaded_lpg):
     loaded_lpg['Charlie']['kidneys'] = 1
     loaded_lpg['Pegasus']['horns'] = 1
     assert all([loaded_lpg['Pegasus']['horns'] == 1,
-                loaded_lpg['Charlie']['kidneys'] ==1])
+                loaded_lpg['Charlie']['kidneys'] == 1])
+
+
+def test_get_node_properties_method(loaded_lpg):
+    """Verify properties method is working correctly."""
+    loaded_lpg['Charlie']['kidneys'] = 1
+    loaded_lpg['Charlie']['horns'] = 1
+    assert loaded_lpg['Charlie'].properties == ['kidneys', 'horns']
 
 
 def test_change_node_properties(loaded_lpg):
@@ -163,7 +170,7 @@ def test_change_node_properties(loaded_lpg):
     loaded_lpg['Charlie']['kidneys'] = 2
     loaded_lpg['Pegasus']['horns'] = 1
     assert all([loaded_lpg['Pegasus']['horns'] == 1,
-                loaded_lpg['Charlie']['kidneys'] ==2])    
+                loaded_lpg['Charlie']['kidneys'] == 2])
     loaded_lpg['Charlie']['kidneys'] = 1
     loaded_lpg['Pegasus']['horns'] = 0
     assert all([loaded_lpg['Pegasus']['horns'] == 0,
@@ -183,6 +190,26 @@ def test_remove_node_DNE_prop(loaded_lpg):
     loaded_lpg['Charlie']['kidneys'] = 1
     with pytest.raises(KeyError):
         del loaded_lpg['Charlie']['kids']
+
+
+def test_add_label_node(loaded_lpg):
+    """Test that we successfully add labels to a node."""
+    loaded_lpg['Charlie'].add_label('fantastic')
+    assert loaded_lpg['Charlie'].labels == ['fantastic']
+
+
+def test_add_label_node_error(loaded_lpg):
+    """Test that we successfully add labels to a node."""
+    loaded_lpg['Charlie'].add_label('fantastic')
+    with pytest.raises(ValueError):
+        loaded_lpg['Charlie'].add_label('fantastic')
+
+
+def test_remove_label_node(loaded_lpg):
+    """Test that labels are removed appropriately."""
+    loaded_lpg['Charlie'].add_label('fantastic')
+    loaded_lpg['Charlie'].remove_label('fantastic')
+    assert loaded_lpg['Charlie'].labels == []
 
 
 # # ================== Relationsihps ================
@@ -226,174 +253,173 @@ def test_adding_rel_success_view(lpg):
         (['rel'], 'rel')
 
 
-# def test_adding_existent_rel(lpg):
-#     """Ensure we get the proper key erro."""
-#     lpg.add_node('Charlie')
-#     lpg.add_node('Unicorn')
-#     lpg.add_relationship('buddies', 'Charlie', 'Unicorn')
-#     with pytest.raises(ValueError):
-#         lpg.add_relationship('buddies', 'Charlie', 'Unicorn')
+def test_adding_existent_rel(lpg):
+    """Ensure we get the proper key erro."""
+    lpg.add_node('Charlie')
+    lpg.add_node('Unicorn')
+    lpg.add_relationship('Charlie', 'Unicorn', 'buddies')
+    with pytest.raises(ValueError):
+        lpg.add_relationship('Charlie', 'Unicorn', 'buddies')
 
 
-# def test_adding_existent_rel_both_ways(lpg):
-#     """Ensure we get the proper key erro."""
-#     lpg.add_node('Charlie')
-#     lpg.add_node('Unicorn')
-#     lpg.add_relationship('buddies', 'Charlie', 'Unicorn')
-#     with pytest.raises(ValueError):
-#         lpg.add_relationship('buddies', 'Charlie', 'Unicorn', both_ways=True)
+def test_adding_existent_rel_both_ways(lpg):
+    """Ensure we get the proper key erro."""
+    lpg.add_node('Charlie')
+    lpg.add_node('Unicorn')
+    lpg.add_relationship('Charlie', 'Unicorn', 'buddies')
+    with pytest.raises(ValueError):
+        lpg.add_relationship('Charlie', 'Unicorn', 'buddies', both_ways=True)
 
 
-# def test_adding_both_ways_success_graph(lpg):
-#     """Ensure successful both ways relationship add."""
-#     lpg.add_node('Charlie')
-#     lpg.add_node('Unicorn')
-#     lpg.add_relationship('buddies', 'Charlie', 'Unicorn', both_ways=True)
-#     assert lpg._graph['Charlie']['Unicorn'] == lpg._graph['Unicorn']['Charlie']
+def test_adding_both_ways_success_graph(lpg):
+    """Ensure successful both ways relationship add."""
+    lpg.add_node('Charlie')
+    lpg.add_node('Unicorn')
+    lpg.add_relationship('Charlie', 'Unicorn', 'buddies', both_ways=True)
+    assert (lpg['Charlie', 'Unicorn']['buddies'].name,
+            lpg['Unicorn', 'Charlie']['buddies'].name) == ('buddies', 'buddies')
 
 
-# def test_adding_both_ways_success_rels(lpg):
-#     """Ensure successful both ways relationship add."""
-#     lpg.add_node('Charlie')
-#     lpg.add_node('Unicorn')
-#     lpg.add_relationship('buddies', 'Charlie', 'Unicorn', both_ways=True)
-#     assert lpg._relationships['buddies']['Charlie']['Unicorn'].name == \
-#         lpg._relationships['buddies']['Unicorn']['Charlie'].name
+def test_conditionals_in_add_rels(lpg):
+    """Ensure we successfully add rels b/w nodes."""
+    lpg.add_node('Charlie')
+    lpg.add_node('Unicorn')
+    lpg.add_node('Pegasus')
+    lpg.add_relationship('Charlie', 'Unicorn', 'buddies', both_ways=True)
+    lpg.add_relationship('Charlie', 'Pegasus', 'buddies')
+    assert (lpg.get_relationships('Charlie', 'Unicorn'),
+            lpg.get_relationships('Charlie', 'Pegasus'),
+            lpg.get_relationships('Unicorn', 'Charlie')) == \
+        (['buddies'], ['buddies'], ['buddies'])
 
 
-# def test_conditionals_in_add_rels(lpg):
-#     """Ensure we successfully add rels b/w nodes."""
-#     lpg.add_node('Charlie')
-#     lpg.add_node('Unicorn')
-#     lpg.add_node('Pegasus')
-#     lpg.add_relationship('buddies', 'Charlie', 'Unicorn', both_ways=True)
-#     lpg.add_relationship('buddies', 'Charlie', 'Pegasus')
-#     assert lpg._graph['Charlie']['Pegasus'][0] == \
-#         lpg._relationships['buddies']['Charlie']['Pegasus'].name
+def test_adding_another_rel_between_nodes(lpg):
+    """Ensure we except attribute error."""
+    lpg.add_node('Charlie')
+    lpg.add_node('Unicorn')
+    lpg.add_node('Pegasus')
+    lpg.add_relationship('Charlie', 'Unicorn', 'buddies', both_ways=True)
+    lpg.add_relationship('Charlie', 'Unicorn', 'cousins')
+    assert sorted(list(lpg['Charlie', 'Unicorn'].keys())) == \
+        sorted(['buddies', 'cousins'])
 
 
-# def test_adding_another_rel_between_nodes(lpg):
-#     """Ensure we except attribute error."""
-#     lpg.add_node('Charlie')
-#     lpg.add_node('Unicorn')
-#     lpg.add_node('Pegasus')
-#     lpg.add_relationship('buddies', 'Charlie', 'Unicorn', both_ways=True)
-#     lpg.add_relationship('cousins', 'Charlie', 'Unicorn')
-#     assert lpg._graph['Charlie']['Unicorn'][1] == \
-#         lpg._relationships['cousins']['Charlie']['Unicorn'].name
+def test_removing_rel(loaded_lpg):
+    """Ensure relationships can be removed."""
+    del loaded_lpg['Charlie', 'Unicorn']['cousins']
+    assert list(loaded_lpg['Charlie', 'Unicorn'].keys()) == ['buddies']
 
 
-# def test_removing_rel(loaded_lpg):
-#     """Ensure relationships can be removed."""
-#     loaded_lpg.remove_relationship('cousins', 'Charlie', 'Unicorn')
-#     assert loaded_lpg._graph['Charlie']['Unicorn'] == ['buddies']
+def test_removing_all_rels_between_nodes(loaded_lpg):
+    """Ensure all relationships are removed."""
+    del loaded_lpg['Charlie', 'Unicorn']
+    assert loaded_lpg._relationships.get(('Charlie', 'Unicorn')) is None
 
 
-# # def test_removing_rel_single(loaded_lpg):
-# #     """Ensure relationships can be removed."""
-# #     loaded_lpg.remove_relationship('cousins', 'Charlie', 'Unicorn')
-# #     loaded_lpg.remove_relationship('buddies', 'Charlie', 'Unicorn')
-# #     with pytest.raises(KeyError):
-# #         loaded_lpg._graph['Charlie']['Unicorn'] == []
+def test_getting_all_rels_in_graph(loaded_lpg):
+    """Ensure we get a list of all rels."""
+    assert loaded_lpg.relationships == ['buddies', 'cousins']
 
 
-# def test_add_rel_properties(loaded_lpg):
-#     """Test that we can add node properties."""
-#     loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
-#     assert loaded_lpg._relationships['buddies']['Charlie']['Unicorn'].properties['since'] == 1985
+def test_removing_rel_single(loaded_lpg):
+    """Ensure relationships can be removed."""
+    del loaded_lpg['Charlie', 'Unicorn']['cousins']
+    del loaded_lpg['Charlie', 'Unicorn']['buddies']
+    with pytest.raises(KeyError):
+        del loaded_lpg['Charlie', 'Unicorn']['raisins']
 
 
-# def test_change_rel_properties(loaded_lpg):
-#     """Test that we can add node properties."""
-#     loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
-#     assert loaded_lpg._relationships['buddies']['Charlie']['Unicorn'].properties['since'] == 1985
-#     loaded_lpg.change_rel_prop('buddies', 'Charlie', 'Unicorn', 'since', 1990)
-#     assert loaded_lpg._relationships['buddies']['Charlie']['Unicorn'].properties['since'] == 1990
+def test_add_rel_properties(loaded_lpg):
+    """Test that we can add node properties."""
+    loaded_lpg['Charlie', 'Unicorn']['buddies']['since'] = 1985
+    assert loaded_lpg['Charlie', 'Unicorn']['buddies'].properties == ['since']
 
 
-# def test_rm_rel_properties(loaded_lpg):
-#     """Test that we can add node properties."""
-#     loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
-#     assert loaded_lpg._relationships['buddies']['Charlie']['Unicorn'].properties['since'] == 1985
-#     loaded_lpg.remove_rel_prop('buddies', 'Charlie', 'Unicorn', 'since')
-#     assert not loaded_lpg._relationships['buddies']['Charlie']['Unicorn'].properties.get('since')
+def test_change_rel_properties(loaded_lpg):
+    """Test that we can add node properties."""
+    loaded_lpg['Charlie', 'Unicorn']['buddies']['since'] = 1985
+    assert loaded_lpg['Charlie', 'Unicorn']['buddies'].properties == ['since']
+    loaded_lpg['Charlie', 'Unicorn']['buddies']['since'] = 1986
+    assert loaded_lpg['Charlie', 'Unicorn']['buddies']['since'] == 1986
 
 
-# def test_error_when_adding_rel_prop_duplicates(loaded_lpg):
-#     """Test that we raise the appropriate error."""
-#     loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
-#     with pytest.raises(KeyError):
-#         loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
+def test_rm_rel_properties(loaded_lpg):
+    """Test that we can add node properties."""
+    loaded_lpg['Charlie', 'Unicorn']['buddies']['since'] = 1985
+    assert loaded_lpg['Charlie', 'Unicorn']['buddies'].properties == ['since']
+    del loaded_lpg['Charlie', 'Unicorn']['buddies']['since']
+    assert loaded_lpg['Charlie', 'Unicorn']['buddies'].properties == []
 
 
-# def test_change_rel_prop_DNE(loaded_lpg):
-#     """Test that we get error if we try to change a property that DNE."""
-#     loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
-#     with pytest.raises(AttributeError):
-#         loaded_lpg.change_rel_prop('buddies', 'Charlie', 'Unicorn', 'butt', 1)
+def test_adding_self_ref_rel(loaded_lpg):
+    """Test that we get an error when trying to add a rel b/w node and self."""
+    with pytest.raises(ValueError):
+        loaded_lpg.add_relationship('Charlie', 'Charlie', 'buddies')
 
 
-# def test_remove_rel_DNE_prop(loaded_lpg):
-#     """Test that we raise an error if removing DNE prop."""
-#     loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
-#     with pytest.raises(AttributeError):
-#         loaded_lpg.remove_rel_prop('buddies', 'Charlie', 'Unicorn', 'butt')
+def test_get_rel_props(loaded_lpg):
+    """Test that we get the appropriate properties back."""
+    loaded_lpg['Charlie', 'Unicorn']['buddies']['since'] = 1985
+    assert loaded_lpg['Charlie', 'Unicorn']['buddies']._properties == \
+        {'since': 1985}
 
 
-# #def test_rel_repr(loaded_lpg):
-# #    """Test that we get the expected string when 'calling' the class."""
-# #    loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
-# #    assert repr(loaded_lpg._relationships['buddies']['Charlie']['Unicorn']) == "Name: buddies\nProperties:\rsince: 1985"
+def test_add_label_relationship(loaded_lpg):
+    """Test that we successfully add labels to a node."""
+    loaded_lpg['Charlie', 'Unicorn']['buddies'].add_label('fantastic')
+    assert loaded_lpg['Charlie', 'Unicorn']['buddies'].labels == ['fantastic']
 
 
-# def test_adding_self_ref_rel(loaded_lpg):
-#     """Test that we get an error when trying to add a rel b/w node and self."""
-#     with pytest.raises(ValueError):
-#         loaded_lpg.add_relationship('buddies', 'Charlie', 'Charlie')
+def test_add_label_relationship_error(loaded_lpg):
+    """Test that we successfully add labels to a node."""
+    loaded_lpg['Charlie', 'Unicorn']['buddies'].add_label('fantastic')
+    with pytest.raises(ValueError):
+        loaded_lpg['Charlie', 'Unicorn']['buddies'].add_label('fantastic')
 
 
-# def test_get_rel_props(loaded_lpg):
-#     """Test that we get the appropriate properties back."""
-#     loaded_lpg.add_rel_props('buddies', 'Charlie', 'Unicorn', since=1985)
-#     assert loaded_lpg.get_relationship_properties('buddies', 'Charlie', 'Unicorn') == \
-#            {'since': 1985}
+def test_remove_label_relationship(loaded_lpg):
+    """Test that labels are removed appropriately."""
+    loaded_lpg['Charlie', 'Unicorn']['buddies'].add_label('fantastic')
+    loaded_lpg['Charlie', 'Unicorn']['buddies'].remove_label('fantastic')
+    assert loaded_lpg['Charlie', 'Unicorn']['buddies'].labels == []
+
 
 # # ====================== RETRIEVAL =============================
 
 
-# def test_get_relationships(loaded_lpg):
-#     """Ensure returns correct relationships."""
-#     loaded_lpg.add_relationship('guys', 'Charlie', 'Pegasus')
-#     assert loaded_lpg.get_relationships('Charlie',
-#                                         'Pegasus') == \
-#         loaded_lpg._graph['Charlie']['Pegasus']
+def test_get_relationships(loaded_lpg):
+    """Ensure returns correct relationships."""
+    loaded_lpg.add_relationship('Charlie', 'Pegasus', 'guys')
+    assert loaded_lpg.get_relationships('Charlie',
+                                        'Pegasus') == \
+        ['guys']
 
 
-# def test_nodes_with_relationships(loaded_lpg):
-#     """Ensure returns correction relationships."""
-#     assert loaded_lpg.nodes_with_relationship('buddies') == \
-#         list(loaded_lpg._relationships['buddies'].keys())
+def test_nodes_with_relationships(loaded_lpg):
+    """Ensure returns correction relationships."""
+    assert all(['Unicorn' in loaded_lpg.nodes_with_relationship('buddies'),
+                'Charlie' in loaded_lpg.nodes_with_relationship('buddies')])
 
 
-# def test_nodes_with_relationships_2(loaded_lpg):
-#     """Ensure returns keys of _graph."""
-#     loaded_lpg.add_node('Willy')
-#     loaded_lpg.add_node('Billy')
-#     loaded_lpg.add_node('Gilly')
-#     loaded_lpg.add_node('Lilly')
-#     for node in loaded_lpg._graph:
-#         if node == 'Billy':
-#             continue
-#         loaded_lpg.add_relationship('acquaintances', 'Billy', node)
-#     assert loaded_lpg.nodes_with_relationship('acquaintances') == \
-#         list(loaded_lpg._relationships['acquaintances'].keys())
+def test_nodes_with_relationships_2(loaded_lpg):
+    """Ensure returns keys of _graph."""
+    loaded_lpg.add_node('Willy')
+    loaded_lpg.add_node('Billy')
+    loaded_lpg.add_node('Gilly')
+    loaded_lpg.add_node('Lilly')
+    for node in loaded_lpg.nodes:
+        if node == 'Billy':
+            continue
+        loaded_lpg.add_relationship('Billy', node, 'acquaintances')
+    assert sorted(loaded_lpg.nodes_with_relationship('acquaintances')) == \
+        sorted(loaded_lpg.nodes)
 
 
-# def test_has_relationship_true(loaded_lpg):
-#     """Ensure returns given relationship."""
-#     assert loaded_lpg.has_relationship('Charlie', 'Unicorn', 'buddies', both_ways=True)
+def test_has_relationship_true(loaded_lpg):
+    """Ensure returns given relationship."""
+    assert loaded_lpg.has_relationship('Charlie', 'Unicorn', 'buddies', both_ways=True)
 
 
-# def test_has_relationship_false(loaded_lpg):
-#     """ensure returns false."""
-#     assert not loaded_lpg.has_relationship('Charlie', 'Unicorn', 'siblings')
+def test_has_relationship_false(loaded_lpg):
+    """ensure returns false."""
+    assert not loaded_lpg.has_relationship('Charlie', 'Unicorn', 'siblings')

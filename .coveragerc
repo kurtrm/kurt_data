@@ -1,7 +1,7 @@
 [run]
 source = 
-    src/labeled_property_graph.py
     src/lpg_refactor.py
+    src/labeled_property_graph.py
 omit = 
     src/__init__.py
     src/gather_keys_oauth2.py
