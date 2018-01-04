@@ -1,6 +1,5 @@
 [run]
 source = 
-    src/labeled_property_graph.py
     src/lpg_refactor.py
 omit = 
     src/__init__.py
@@ -8,5 +7,6 @@ omit =
     src/fitbit_data.py
     src/tmobile_bill_parser.py
     src/lpg_cli.py
+    src/labeled_property_graph.py
 [report]
 show_missing = False

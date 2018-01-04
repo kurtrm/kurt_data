@@ -185,6 +185,27 @@ def test_remove_node_DNE_prop(loaded_lpg):
         del loaded_lpg['Charlie']['kids']
 
 
+def test_add_label_node(loaded_lpg):
+    """Test that we successfully add labels to a node."""
+    loaded_lpg['Charlie'].add_label('fantastic')
+    assert loaded_lpg['Charlie'].labels == ['fantastic']
+
+
+def test_add_label_node_error(loaded_lpg):
+    """Test that we successfully add labels to a node."""
+    loaded_lpg['Charlie'].add_label('fantastic')
+    with pytest.raises(ValueError):
+        loaded_lpg['Charlie'].add_label('fantastic')
+
+
+def test_remove_label_node(loaded_lpg):
+    """Test that labels are removed appropriately."""
+    loaded_lpg['Charlie'].add_label('fantastic')
+    loaded_lpg['Charlie'].remove_label('fantastic')
+    assert loaded_lpg['Charlie'].labels == []
+
+
+
 # # ================== Relationsihps ================
 
 
