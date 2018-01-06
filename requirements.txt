@@ -32,7 +32,6 @@ pycryptodome==3.4.7
 Pygments==2.2.0
 pypandoc==1.4
 pyparsing==2.2.0
-PyPDF2==1.26.0
 pytest==3.2.3
 pytest-cov==2.5.1
 python-dateutil==2.6.1

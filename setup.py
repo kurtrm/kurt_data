@@ -14,6 +14,6 @@ setup(
     author='Kurt Maurer',
     author_email='kurtrm@gmail.com',
     license='MIT',
-    install_requires=['fitbit', 'PyPDF2'],
+    install_requires=['fitbit'],
     extras_require=extra_packages
 )
